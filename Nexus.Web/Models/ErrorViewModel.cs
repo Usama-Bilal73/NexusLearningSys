@@ -1,4 +1,4 @@
-namespace NexusLearningSys.Models
+namespace Nexus.Web.Models
 {
     public class ErrorViewModel
     {

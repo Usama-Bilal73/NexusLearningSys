@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using NexusLearningSys.Models;
+using Nexus.Web.Models;
 
-namespace NexusLearningSys.Controllers
+namespace Nexus.Web.Controllers
 {
     public class HomeController : Controller
     {
