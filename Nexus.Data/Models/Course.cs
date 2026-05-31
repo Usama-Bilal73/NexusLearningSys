@@ -29,4 +29,8 @@ public class Course
     public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
 
     public ICollection<Grade> Grades { get; set; } = new List<Grade>();
+
+    public ICollection<CourseMaterial> Materials { get; set; } = new List<CourseMaterial>();
+
+    public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
 }

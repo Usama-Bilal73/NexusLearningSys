@@ -9,9 +9,12 @@ public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
     public void Configure(EntityTypeBuilder<Submission> builder)
     {
         builder.ToTable("Submissions");
-        builder.HasKey(submission => new { submission.StudentId, submission.AssignmentId });
+        builder.HasKey(submission => submission.Id);
+        builder.HasIndex(submission => new { submission.StudentId, submission.AssignmentId, submission.SubmittedAt });
         builder.Property(submission => submission.StudentId).HasMaxLength(450).IsRequired();
         builder.Property(submission => submission.FilePath).HasMaxLength(500).IsRequired();
+        builder.Property(submission => submission.Status).HasMaxLength(40).IsRequired();
+        builder.Property(submission => submission.Feedback).HasMaxLength(1000);
         builder.Property(submission => submission.SubmittedAt).IsRequired();
 
         builder.HasOne(submission => submission.Student)

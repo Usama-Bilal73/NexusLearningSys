@@ -1,0 +1,7 @@
+@model Nexus.Web.ViewModels.Teacher.TeacherDashboardViewModel
+@{ ViewData["Title"] = "Teacher Dashboard"; }
+<h1>Teacher Dashboard</h1>
+<p><a class="btn btn-primary" asp-action="CreateAssignment">Create Assignment</a> <a class="btn btn-secondary" asp-action="UploadMaterial">Upload Course Material</a> <a class="btn btn-outline-primary" asp-controller="Gradebook" asp-action="Index">Gradebook</a> <a class="btn btn-outline-primary" asp-controller="Quizzes" asp-action="Index">Quizzes</a></p>
+<table class="table"><thead><tr><th>Course</th><th>Semester</th><th>Students</th><th>Assignments</th><th>Materials</th></tr></thead><tbody>
+@foreach (var c in Model.Courses) { <tr><td>@c.Name</td><td>@c.Semester</td><td>@c.StudentCount</td><td>@c.AssignmentCount</td><td>@c.MaterialCount</td></tr> }
+</tbody></table>

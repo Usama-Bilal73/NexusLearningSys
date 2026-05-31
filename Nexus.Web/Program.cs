@@ -15,6 +15,8 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddBusinessServices();
+builder.Services.AddScoped<Nexus.Web.Services.IFileStorageService, Nexus.Web.Services.FileStorageService>();
+builder.Services.AddScoped<Nexus.Web.Services.IGradebookService, Nexus.Web.Services.GradebookService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {

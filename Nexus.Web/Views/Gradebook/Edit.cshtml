@@ -1,0 +1,7 @@
+@model Nexus.Web.ViewModels.Gradebook.GradeEntryViewModel
+@{ ViewData["Title"] = "Enter Marks"; }
+<h1>Enter Marks</h1><h2>@Model.StudentName - @Model.CourseName</h2><form method="post"><input asp-for="StudentId" type="hidden" /><input asp-for="CourseId" type="hidden" /><input asp-for="StudentName" type="hidden" /><input asp-for="CourseName" type="hidden" />
+<div class="mb-3"><label asp-for="AssignmentMarks" class="form-label"></label><input asp-for="AssignmentMarks" class="form-control" /><span asp-validation-for="AssignmentMarks" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="MidtermMarks" class="form-label"></label><input asp-for="MidtermMarks" class="form-control" /><span asp-validation-for="MidtermMarks" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="FinalMarks" class="form-label"></label><input asp-for="FinalMarks" class="form-control" /><span asp-validation-for="FinalMarks" class="text-danger"></span></div>
+<button class="btn btn-primary">Save</button></form>@section Scripts { <partial name="_ValidationScriptsPartial" /> }

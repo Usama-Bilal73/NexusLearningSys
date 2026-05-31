@@ -1,0 +1,8 @@
+@model Nexus.Web.ViewModels.Quiz.QuizFormViewModel
+@{ ViewData["Title"] = "Create Quiz"; }
+<h1>Create Quiz</h1><form method="post"><div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="CourseId" class="form-label"></label><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select></div>
+<div class="mb-3"><label asp-for="Title" class="form-label"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control"></textarea></div>
+<div class="mb-3"><label asp-for="DurationMinutes" class="form-label"></label><input asp-for="DurationMinutes" class="form-control" /></div>
+<div class="form-check mb-3"><input asp-for="IsPublished" class="form-check-input" /><label asp-for="IsPublished" class="form-check-label"></label></div><button class="btn btn-primary">Create</button></form>@section Scripts { <partial name="_ValidationScriptsPartial" /> }
