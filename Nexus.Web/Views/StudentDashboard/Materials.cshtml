@@ -1,5 +1,5 @@
 @model IEnumerable<Nexus.Data.Models.CourseMaterial>
 @{ ViewData["Title"] = "Materials"; }
-<h1>Course Materials</h1><table class="table"><thead><tr><th>Type</th><th>Title</th><th>Download</th><th>Uploaded</th></tr></thead><tbody>
-@foreach (var m in Model) { <tr><td>@m.MaterialType</td><td>@m.Title</td><td><a href="@m.FilePath" download>@m.OriginalFileName</a></td><td>@m.UploadedAtUtc</td></tr> }
+<h1>Course Materials</h1><table class="table"><thead><tr><th>Category</th><th>Type</th><th>Title</th><th>Download</th><th>Uploaded</th></tr></thead><tbody>
+@foreach (var m in Model) { <tr><td>@m.Category</td><td>@m.MaterialType</td><td>@m.Title</td><td><a href="@m.FilePath" download>@m.OriginalFileName</a></td><td>@m.UploadedAtUtc</td></tr> }
 </tbody></table>

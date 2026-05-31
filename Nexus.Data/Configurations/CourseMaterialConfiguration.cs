@@ -11,11 +11,15 @@ public class CourseMaterialConfiguration : IEntityTypeConfiguration<CourseMateri
         builder.ToTable("CourseMaterials");
         builder.HasKey(material => material.Id);
         builder.Property(material => material.Title).HasMaxLength(180).IsRequired();
+        builder.Property(material => material.Category).HasMaxLength(80).IsRequired();
         builder.Property(material => material.OriginalFileName).HasMaxLength(260).IsRequired();
         builder.Property(material => material.FilePath).HasMaxLength(500).IsRequired();
         builder.Property(material => material.ContentType).HasMaxLength(120);
+        builder.Property(material => material.ExtractedText).HasColumnType("nvarchar(max)");
+        builder.Property(material => material.AiSummary).HasColumnType("nvarchar(max)");
         builder.Property(material => material.UploadedByTeacherId).HasMaxLength(450).IsRequired();
         builder.HasIndex(material => new { material.CourseId, material.MaterialType });
+        builder.HasIndex(material => new { material.CourseId, material.Category });
 
         builder.HasOne(material => material.Course)
             .WithMany(course => course.Materials)

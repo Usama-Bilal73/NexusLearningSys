@@ -22,6 +22,10 @@ public class CourseMaterial
     public CourseMaterialType MaterialType { get; set; }
 
     [Required]
+    [MaxLength(80)]
+    public string Category { get; set; } = "General";
+
+    [Required]
     [MaxLength(260)]
     public string OriginalFileName { get; set; } = string.Empty;
 
@@ -32,7 +36,13 @@ public class CourseMaterial
     [MaxLength(120)]
     public string? ContentType { get; set; }
 
+    public string? ExtractedText { get; set; }
+
+    public string? AiSummary { get; set; }
+
     public DateTime UploadedAtUtc { get; set; } = DateTime.UtcNow;
+
+    public DateTime? SummarizedAtUtc { get; set; }
 
     [Required]
     public string UploadedByTeacherId { get; set; } = string.Empty;
