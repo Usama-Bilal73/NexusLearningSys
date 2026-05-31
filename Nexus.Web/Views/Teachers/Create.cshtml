@@ -1,0 +1,5 @@
+@model AdminUserFormViewModel
+@{ ViewData["Title"] = "Create Teacher"; }
+<div class="admin-page-title"><h1>Create Teacher</h1><p>Add a secure teacher account.</p></div>
+<div class="card admin-card"><div class="card-body"><form asp-action="Create" method="post"><partial name="_UserForm" model="Model" /><div class="mt-4"><button class="btn btn-primary">Create Teacher</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></div></form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

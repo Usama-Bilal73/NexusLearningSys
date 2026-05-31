@@ -1,0 +1,4 @@
+@model Department
+@{ ViewData["Title"] = "Delete Department"; }
+<div class="admin-page-title"><h1>Delete Department</h1><p>This will remove @Model.Name and unassign its courses.</p></div>
+<div class="card border-danger admin-card"><div class="card-body"><h4>@Model.Name</h4><form asp-action="Delete" method="post"><input type="hidden" asp-for="Id" /><button class="btn btn-danger">Delete</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></form></div></div>

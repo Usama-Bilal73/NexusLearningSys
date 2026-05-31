@@ -1,0 +1,5 @@
+@model DepartmentFormViewModel
+@{ ViewData["Title"] = "Create Department"; }
+<div class="admin-page-title"><h1>Create Department</h1><p>Add a new academic department.</p></div>
+<div class="card admin-card"><div class="card-body"><form asp-action="Create" method="post"><partial name="_DepartmentForm" model="Model" /><button class="btn btn-primary">Create Department</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

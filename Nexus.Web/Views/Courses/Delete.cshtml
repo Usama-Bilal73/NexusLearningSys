@@ -1,0 +1,4 @@
+@model Course
+@{ ViewData["Title"] = "Delete Course"; }
+<div class="admin-page-title"><h1>Delete Course</h1><p>Deleting @Model.Name also removes related assignments, enrollments, submissions, and grades.</p></div>
+<div class="card border-danger admin-card"><div class="card-body"><h4>@Model.Name</h4><p class="text-muted">@Model.Semester · @(Model.Department?.Name ?? "Unassigned")</p><form asp-action="Delete" method="post"><input type="hidden" asp-for="Id" /><button class="btn btn-danger">Delete</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></form></div></div>

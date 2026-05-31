@@ -2,8 +2,42 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="p-4 bg-light rounded-3 shadow-sm">
-    <h1 class="display-6">Admin Dashboard</h1>
-    <p class="lead">Manage users, roles, and platform configuration.</p>
-    <a class="btn btn-primary" asp-controller="RoleManagement" asp-action="Index">Manage Roles</a>
+<div class="admin-hero mb-4">
+    <div>
+        <span class="eyebrow">Nexus control center</span>
+        <h1>Admin Dashboard</h1>
+        <p>Manage people, departments, and courses with fast search, polished workflows, and clean governance.</p>
+    </div>
+    <a class="btn btn-light btn-lg" asp-controller="RoleManagement" asp-action="Index">Role Management</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-xl-3">
+        <a class="admin-tile" asp-controller="Teachers" asp-action="Index">
+            <span class="tile-icon">👩‍🏫</span>
+            <strong>Manage Teachers</strong>
+            <small>Faculty profiles, credentials, and access.</small>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <a class="admin-tile" asp-controller="Students" asp-action="Index">
+            <span class="tile-icon">🎓</span>
+            <strong>Manage Students</strong>
+            <small>Learner accounts and onboarding.</small>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <a class="admin-tile" asp-controller="Departments" asp-action="Index">
+            <span class="tile-icon">🏛️</span>
+            <strong>Manage Departments</strong>
+            <small>Academic units and course grouping.</small>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <a class="admin-tile" asp-controller="Courses" asp-action="Index">
+            <span class="tile-icon">📚</span>
+            <strong>Manage Courses</strong>
+            <small>Semesters, instructors, and curriculum.</small>
+        </a>
+    </div>
 </div>
