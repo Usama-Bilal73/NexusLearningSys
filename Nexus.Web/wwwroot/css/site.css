@@ -20,3 +20,131 @@ html {
 body {
   margin-bottom: 60px;
 }
+:root {
+  --nexus-primary: #4f46e5;
+  --nexus-primary-dark: #312e81;
+  --nexus-accent: #06b6d4;
+  --nexus-surface: #ffffff;
+  --nexus-soft: #f4f7fb;
+}
+
+body {
+  background: linear-gradient(180deg, #f7f9ff 0%, #eef4ff 40%, #ffffff 100%);
+}
+
+.admin-hero {
+  align-items: center;
+  background: radial-gradient(circle at top left, rgba(6, 182, 212, .45), transparent 32%), linear-gradient(135deg, #312e81 0%, #4f46e5 58%, #06b6d4 100%);
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(49, 46, 129, .28);
+  color: white;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 2.4rem;
+  position: relative;
+}
+
+.admin-hero h1 {
+  font-weight: 800;
+  letter-spacing: -.04em;
+  margin: .35rem 0;
+}
+
+.admin-hero p {
+  color: rgba(255,255,255,.85);
+  font-size: 1.08rem;
+  margin: 0;
+  max-width: 760px;
+}
+
+.eyebrow {
+  color: #bae6fd;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.admin-tile {
+  background: rgba(255,255,255,.86);
+  border: 1px solid rgba(79, 70, 229, .08);
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, .08);
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  min-height: 210px;
+  padding: 1.5rem;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.admin-tile:hover {
+  box-shadow: 0 24px 60px rgba(79, 70, 229, .2);
+  color: var(--nexus-primary-dark);
+  transform: translateY(-5px);
+}
+
+.tile-icon {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(79,70,229,.12), rgba(6,182,212,.16));
+  border-radius: 18px;
+  display: inline-flex;
+  font-size: 2rem;
+  height: 64px;
+  justify-content: center;
+  width: 64px;
+}
+
+.admin-card {
+  border: 0;
+  border-radius: 24px;
+  box-shadow: 0 18px 55px rgba(15, 23, 42, .08);
+  overflow: hidden;
+}
+
+.admin-table thead th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.admin-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.admin-page-title {
+  margin-bottom: 1.5rem;
+}
+
+.admin-page-title h1 {
+  color: #111827;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+.admin-page-title p,
+.empty-state {
+  color: #64748b;
+}
+
+.empty-state {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .admin-hero {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+}

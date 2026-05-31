@@ -1,0 +1,5 @@
+@model DepartmentFormViewModel
+@{ ViewData["Title"] = "Edit Department"; }
+<div class="admin-page-title"><h1>Edit Department</h1><p>Keep department names clear and discoverable.</p></div>
+<div class="card admin-card"><div class="card-body"><form asp-action="Edit" method="post"><input type="hidden" asp-for="Id" /><partial name="_DepartmentForm" model="Model" /><button class="btn btn-primary">Save Changes</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Nexus.Data.Persistence;
 
 #nullable disable
@@ -10,7 +11,8 @@ using Nexus.Data.Persistence;
 namespace Nexus.Data.Migrations;
 
 [DbContext(typeof(ApplicationDbContext))]
-partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+[Migration("20260531001000_AddAcademicModels")]
+partial class AddAcademicModels
 {
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
@@ -261,4 +263,5 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
 
 #pragma warning restore 612, 618
     }
+
 }

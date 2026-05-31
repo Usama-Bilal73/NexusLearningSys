@@ -1,0 +1,4 @@
+@model Course
+@{ ViewData["Title"] = "Course Details"; }
+<div class="admin-page-title"><h1>@Model.Name</h1><p>@Model.Semester · @(Model.Department?.Name ?? "Unassigned department")</p></div>
+<div class="card admin-card"><div class="card-body"><dl class="row"><dt class="col-sm-3">Teacher</dt><dd class="col-sm-9">@(Model.Teacher?.DisplayName ?? Model.Teacher?.Email ?? "Unassigned")</dd><dt class="col-sm-3">Assignments</dt><dd class="col-sm-9">@Model.Assignments.Count scheduled</dd></dl><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> <a asp-action="Index" class="btn btn-outline-secondary">Back</a></div></div>

@@ -1,0 +1,4 @@
+@model AdminUserFormViewModel
+@{ ViewData["Title"] = "Student Details"; }
+<div class="admin-page-title"><h1>@Model.FirstName @Model.LastName</h1><p>Student profile details.</p></div>
+<div class="card admin-card"><div class="card-body"><dl class="row"><dt class="col-sm-3">Email</dt><dd class="col-sm-9">@Model.Email</dd><dt class="col-sm-3">Name</dt><dd class="col-sm-9">@Model.FirstName @Model.LastName</dd></dl><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> <a asp-action="Index" class="btn btn-outline-secondary">Back</a></div></div>

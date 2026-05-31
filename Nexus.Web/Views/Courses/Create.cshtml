@@ -1,0 +1,5 @@
+@model CourseFormViewModel
+@{ ViewData["Title"] = "Create Course"; }
+<div class="admin-page-title"><h1>Create Course</h1><p>Launch a course with semester, instructor, and department assignment.</p></div>
+<div class="card admin-card"><div class="card-body"><form asp-action="Create" method="post"><partial name="_CourseForm" model="Model" /><div class="mt-4"><button class="btn btn-primary">Create Course</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></div></form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
