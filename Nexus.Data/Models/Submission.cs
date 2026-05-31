@@ -5,6 +5,8 @@ namespace Nexus.Data.Models;
 
 public class Submission
 {
+    public int Id { get; set; }
+
     public string StudentId { get; set; } = string.Empty;
 
     public ApplicationUser? Student { get; set; }
@@ -18,4 +20,11 @@ public class Submission
     public string FilePath { get; set; } = string.Empty;
 
     public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+
+    [Required]
+    [MaxLength(40)]
+    public string Status { get; set; } = "Submitted";
+
+    [MaxLength(1000)]
+    public string? Feedback { get; set; }
 }

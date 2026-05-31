@@ -31,12 +31,12 @@ public class DashboardController : Controller
     [Authorize(Roles = ApplicationRoles.Teacher)]
     public IActionResult Teacher()
     {
-        return View();
+        return RedirectToAction("Index", "TeacherDashboard");
     }
 
     [Authorize(Roles = ApplicationRoles.Student)]
     public IActionResult Student()
     {
-        return View();
+        return RedirectToAction("Index", "StudentDashboard");
     }
 }

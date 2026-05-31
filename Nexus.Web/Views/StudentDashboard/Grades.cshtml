@@ -1,0 +1,3 @@
+@model IEnumerable<Nexus.Data.Models.Grade>
+@{ ViewData["Title"] = "My Grades"; }
+<h1>My Grades</h1><table class="table"><thead><tr><th>Course</th><th>Assignment 20%</th><th>Midterm 30%</th><th>Final 50%</th><th>Total</th></tr></thead><tbody>@foreach (var g in Model) { <tr><td>@g.Course?.Name</td><td>@g.AssignmentMarks</td><td>@g.MidtermMarks</td><td>@g.FinalMarks</td><td>@g.TotalMarks</td></tr> }</tbody></table>

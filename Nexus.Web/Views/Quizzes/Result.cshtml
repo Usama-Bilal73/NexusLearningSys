@@ -1,0 +1,4 @@
+@model Nexus.Data.Models.QuizAttempt
+@{ ViewData["Title"] = "Quiz Result"; var total = Model.Quiz?.Questions.Sum(q => q.Points) ?? 0; }
+<h1>Quiz Result</h1><div class="alert alert-success">Score: @Model.Score / @total @(Model.IsAutoSubmitted ? "(auto-submitted)" : string.Empty)</div>
+<table class="table"><thead><tr><th>Question</th><th>Your Answer</th><th>Result</th><th>Points</th></tr></thead><tbody>@foreach (var a in Model.Answers) { <tr><td>@a.Question?.Text</td><td>@a.SelectedOption</td><td>@(a.IsCorrect ? "Correct" : "Incorrect")</td><td>@a.PointsEarned</td></tr> }</tbody></table>

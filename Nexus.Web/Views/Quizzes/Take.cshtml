@@ -1,0 +1,9 @@
+@model Nexus.Web.ViewModels.Quiz.QuizAttemptViewModel
+@{ ViewData["Title"] = "Take Quiz"; }
+<h1>@Model.Title</h1><div class="alert alert-info">Time remaining: <span id="timer"></span></div>
+<form method="post" asp-action="Submit" id="quizForm"><input asp-for="QuizId" type="hidden" /><input asp-for="AttemptId" type="hidden" />
+@for (var i = 0; i < Model.Questions.Count; i++) { var q = Model.Questions[i]; <div class="card mb-3"><div class="card-header">@(i + 1). @q.Text</div><div class="card-body">
+@foreach (var option in new[] { ("A", q.OptionA), ("B", q.OptionB), ("C", q.OptionC), ("D", q.OptionD) }) { <div class="form-check"><input class="form-check-input" type="radio" name="Answers[@q.Id]" value="@option.Item1" checked="@(Model.Answers.TryGetValue(q.Id, out var selected) && selected == option.Item1)" /><label class="form-check-label">@option.Item1. @option.Item2</label></div> }
+</div></div> }
+<button class="btn btn-primary">Submit Quiz</button></form>
+@section Scripts { <script>let remaining=@Model.RemainingSeconds; const el=document.getElementById('timer'); const form=document.getElementById('quizForm'); function tick(){ const m=Math.floor(remaining/60); const s=remaining%60; el.textContent=`${m}:${s.toString().padStart(2,'0')}`; if(remaining<=0){ form.submit(); return;} remaining--; setTimeout(tick,1000);} tick();</script> }

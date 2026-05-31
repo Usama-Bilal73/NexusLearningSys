@@ -24,6 +24,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Grade> Grades => Set<Grade>();
 
+    public DbSet<CourseMaterial> CourseMaterials => Set<CourseMaterial>();
+
+    public DbSet<Quiz> Quizzes => Set<Quiz>();
+
+    public DbSet<Question> Questions => Set<Question>();
+
+    public DbSet<QuizAttempt> QuizAttempts => Set<QuizAttempt>();
+
+    public DbSet<Answer> Answers => Set<Answer>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

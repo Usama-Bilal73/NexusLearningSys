@@ -1,0 +1,4 @@
+@model Nexus.Data.Models.Quiz
+@{ ViewData["Title"] = "Quiz Details"; }
+<h1>@Model.Title</h1><p>@Model.Course?.Name | @Model.DurationMinutes minute timer | Published: @Model.IsPublished</p><p><a class="btn btn-primary" asp-action="AddQuestion" asp-route-quizId="@Model.Id">Add MCQ Question</a></p>
+<table class="table"><thead><tr><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Points</th></tr></thead><tbody>@foreach (var q in Model.Questions) { <tr><td>@q.Text</td><td>@q.OptionA</td><td>@q.OptionB</td><td>@q.OptionC</td><td>@q.OptionD</td><td>@q.CorrectOption</td><td>@q.Points</td></tr> }</tbody></table>

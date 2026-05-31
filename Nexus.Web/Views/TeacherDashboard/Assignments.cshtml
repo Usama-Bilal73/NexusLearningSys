@@ -1,0 +1,6 @@
+@model IEnumerable<Nexus.Data.Models.Assignment>
+@{ ViewData["Title"] = "Assignments"; }
+<h1>Assignments</h1><p><a class="btn btn-primary" asp-action="CreateAssignment">Create Assignment</a></p>
+<table class="table"><thead><tr><th>Course</th><th>Title</th><th>Deadline</th><th></th></tr></thead><tbody>
+@foreach (var a in Model) { <tr><td>@a.Course?.Name</td><td>@a.Title</td><td>@a.Deadline</td><td><a asp-action="EditAssignment" asp-route-id="@a.Id">Edit</a><form asp-action="DeleteAssignment" asp-route-id="@a.Id" method="post" class="d-inline"><button class="btn btn-link text-danger">Delete</button></form></td></tr> }
+</tbody></table>
