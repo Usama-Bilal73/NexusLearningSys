@@ -9,12 +9,50 @@ namespace Nexus.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropPrimaryKey(name: "PK_Submissions", schema: "nexus", table: "Submissions");
-            migrationBuilder.AddColumn<int>(name: "Id", schema: "nexus", table: "Submissions", type: "int", nullable: false)
-                .Annotation("SqlServer:Identity", "1, 1");
-            migrationBuilder.AddColumn<string>(name: "Feedback", schema: "nexus", table: "Submissions", type: "nvarchar(1000)", maxLength: 1000, nullable: true);
-            migrationBuilder.AddColumn<string>(name: "Status", schema: "nexus", table: "Submissions", type: "nvarchar(40)", maxLength: 40, nullable: false, defaultValue: "Submitted");
-            migrationBuilder.AddPrimaryKey(name: "PK_Submissions", schema: "nexus", table: "Submissions", column: "Id");
+            migrationBuilder.CreateTable(
+                name: "__SubmissionBackup",
+                schema: "nexus",
+                columns: table => new
+                {
+                    StudentId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    AssignmentId = table.Column<int>(type: "int", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                });
+
+            migrationBuilder.Sql(
+                "INSERT INTO [nexus].[__SubmissionBackup] ([StudentId], [AssignmentId], [FilePath], [SubmittedAt]) " +
+                "SELECT [StudentId], [AssignmentId], [FilePath], [SubmittedAt] FROM [nexus].[Submissions]");
+
+            migrationBuilder.DropTable(name: "Submissions", schema: "nexus");
+
+            migrationBuilder.CreateTable(
+                name: "Submissions",
+                schema: "nexus",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
+                    StudentId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    AssignmentId = table.Column<int>(type: "int", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false, defaultValue: "Submitted"),
+                    Feedback = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Submissions", x => x.Id);
+                    table.ForeignKey("FK_Submissions_AspNetUsers_StudentId", x => x.StudentId, principalSchema: "nexus", principalTable: "AspNetUsers", principalColumn: "Id", onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey("FK_Submissions_Assignments_AssignmentId", x => x.AssignmentId, principalSchema: "nexus", principalTable: "Assignments", principalColumn: "Id", onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.Sql(
+                "INSERT INTO [nexus].[Submissions] ([StudentId], [AssignmentId], [FilePath], [SubmittedAt], [Status]) " +
+                "SELECT [StudentId], [AssignmentId], [FilePath], [SubmittedAt], N'Submitted' FROM [nexus].[__SubmissionBackup]");
+
+            migrationBuilder.DropTable(name: "__SubmissionBackup", schema: "nexus");
+
+            migrationBuilder.CreateIndex(name: "IX_Submissions_AssignmentId", schema: "nexus", table: "Submissions", column: "AssignmentId");
             migrationBuilder.CreateIndex(name: "IX_Submissions_StudentId_AssignmentId_SubmittedAt", schema: "nexus", table: "Submissions", columns: new[] { "StudentId", "AssignmentId", "SubmittedAt" });
 
             migrationBuilder.CreateTable(
@@ -136,12 +174,47 @@ namespace Nexus.Data.Migrations
             migrationBuilder.DropTable(name: "Questions", schema: "nexus");
             migrationBuilder.DropTable(name: "QuizAttempts", schema: "nexus");
             migrationBuilder.DropTable(name: "Quizzes", schema: "nexus");
-            migrationBuilder.DropPrimaryKey(name: "PK_Submissions", schema: "nexus", table: "Submissions");
-            migrationBuilder.DropIndex(name: "IX_Submissions_StudentId_AssignmentId_SubmittedAt", schema: "nexus", table: "Submissions");
-            migrationBuilder.DropColumn(name: "Id", schema: "nexus", table: "Submissions");
-            migrationBuilder.DropColumn(name: "Feedback", schema: "nexus", table: "Submissions");
-            migrationBuilder.DropColumn(name: "Status", schema: "nexus", table: "Submissions");
-            migrationBuilder.AddPrimaryKey(name: "PK_Submissions", schema: "nexus", table: "Submissions", columns: new[] { "StudentId", "AssignmentId" });
+            migrationBuilder.CreateTable(
+                name: "__SubmissionBackup",
+                schema: "nexus",
+                columns: table => new
+                {
+                    StudentId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    AssignmentId = table.Column<int>(type: "int", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                });
+
+            migrationBuilder.Sql(
+                "INSERT INTO [nexus].[__SubmissionBackup] ([StudentId], [AssignmentId], [FilePath], [SubmittedAt]) " +
+                "SELECT [StudentId], [AssignmentId], [FilePath], [SubmittedAt] FROM [nexus].[Submissions]");
+
+            migrationBuilder.DropTable(name: "Submissions", schema: "nexus");
+
+            migrationBuilder.CreateTable(
+                name: "Submissions",
+                schema: "nexus",
+                columns: table => new
+                {
+                    StudentId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    AssignmentId = table.Column<int>(type: "int", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Submissions", x => new { x.StudentId, x.AssignmentId });
+                    table.ForeignKey("FK_Submissions_AspNetUsers_StudentId", x => x.StudentId, principalSchema: "nexus", principalTable: "AspNetUsers", principalColumn: "Id", onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey("FK_Submissions_Assignments_AssignmentId", x => x.AssignmentId, principalSchema: "nexus", principalTable: "Assignments", principalColumn: "Id", onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.Sql(
+                "INSERT INTO [nexus].[Submissions] ([StudentId], [AssignmentId], [FilePath], [SubmittedAt]) " +
+                "SELECT [StudentId], [AssignmentId], [FilePath], [SubmittedAt] FROM [nexus].[__SubmissionBackup]");
+
+            migrationBuilder.DropTable(name: "__SubmissionBackup", schema: "nexus");
+
+            migrationBuilder.CreateIndex(name: "IX_Submissions_AssignmentId", schema: "nexus", table: "Submissions", column: "AssignmentId");
         }
     }
 }
