@@ -1,10 +1,81 @@
 @model PagedResult<AdminUserListItemViewModel>
-@{ ViewData["Title"] = "Students"; }
-<div class="admin-hero mb-4"><div><span class="eyebrow">People operations</span><h1>Students</h1><p>Create, edit, search, and govern students with a refined admin experience.</p></div><a asp-action="Create" class="btn btn-light btn-lg">+ New Student</a></div>
+@{
+    ViewData["Title"] = "Students";
+}
+<div class="admin-hero mb-4">
+    <div>
+        <span class="eyebrow">People operations</span>
+        <h1>Students</h1>
+        <p>Create, edit, search, and govern students with a refined admin experience.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-light btn-lg">+ New Student</a>
+</div>
 <partial name="_AdminAlerts" />
-<div class="card admin-card"><div class="card-body">
-<form method="get" class="row g-2 align-items-center mb-3"><div class="col-md-8"><input name="searchTerm" value="@Model.SearchTerm" class="form-control form-control-lg" placeholder="Search by name or email..." /></div><div class="col-md-2"><button class="btn btn-primary btn-lg w-100">Search</button></div><div class="col-md-2"><a asp-action="Index" class="btn btn-outline-secondary btn-lg w-100">Reset</a></div></form>
-<div class="table-responsive"><table class="table align-middle admin-table"><thead><tr><th>Name</th><th>Email</th><th>Created</th><th class="text-end">Actions</th></tr></thead><tbody>@foreach (var item in Model.Items){<tr><td><strong>@item.FullName</strong><div class="text-muted small">@item.Role</div></td><td>@item.Email</td><td>@item.CreatedAtUtc.ToString("MMM dd, yyyy")</td><td class="text-end"><a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a> <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a> <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a></td></tr>}</tbody></table></div>
-@if (!Model.Items.Any()) { <div class="empty-state">No students match your search.</div> }
-@if (Model.TotalPages > 1) { <nav><ul class="pagination justify-content-end"><li class="page-item @(Model.HasPreviousPage ? "" : "disabled")"><a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a></li>@for (var page = 1; page <= Model.TotalPages; page++) { <li class="page-item @(page == Model.PageNumber ? "active" : "")"><a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, pageNumber = page, pageSize = Model.PageSize })">@page</a></li> }<li class="page-item @(Model.HasNextPage ? "" : "disabled")"><a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a></li></ul></nav> }
-</div></div>
+<div class="card admin-card">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-center mb-3">
+            <div class="col-md-8">
+                <input name="searchTerm" value="@Model.SearchTerm" class="form-control form-control-lg" placeholder="Search by name or email..." />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary btn-lg w-100">Search</button>
+            </div>
+            <div class="col-md-2">
+                <a asp-action="Index" class="btn btn-outline-secondary btn-lg w-100">Reset</a>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table align-middle admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Created</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.FullName</strong>
+                                <div class="text-muted small">@item.Role</div>
+                            </td>
+                            <td>@item.Email</td>
+                            <td>@item.CreatedAtUtc.ToString("MMM dd, yyyy")</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (!Model.Items.Any())
+        {
+            <div class="empty-state">No students match your search.</div>
+        }
+        @if (Model.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
+                    </li>
+                    @for (var p = 1; p <= Model.TotalPages; p++)
+                    {
+                        <li class="page-item @(p == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, pageNumber = p, pageSize = Model.PageSize })">@p</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

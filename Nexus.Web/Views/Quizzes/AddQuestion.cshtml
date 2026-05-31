@@ -1,6 +1,46 @@
 @model Nexus.Web.ViewModels.Quiz.QuestionFormViewModel
-@{ ViewData["Title"] = "Add Question"; }
-<h1>Add MCQ Question</h1><form method="post"><input asp-for="QuizId" type="hidden" />
-<div class="mb-3"><label asp-for="Text" class="form-label"></label><textarea asp-for="Text" class="form-control"></textarea></div>
-<div class="mb-3"><label asp-for="OptionA" class="form-label"></label><input asp-for="OptionA" class="form-control" /></div><div class="mb-3"><label asp-for="OptionB" class="form-label"></label><input asp-for="OptionB" class="form-control" /></div><div class="mb-3"><label asp-for="OptionC" class="form-label"></label><input asp-for="OptionC" class="form-control" /></div><div class="mb-3"><label asp-for="OptionD" class="form-label"></label><input asp-for="OptionD" class="form-control" /></div>
-<div class="mb-3"><label asp-for="CorrectOption" class="form-label"></label><select asp-for="CorrectOption" class="form-select"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="mb-3"><label asp-for="Points" class="form-label"></label><input asp-for="Points" class="form-control" /></div><button class="btn btn-primary">Save</button></form>@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@{
+    ViewData["Title"] = "Add Question";
+}
+<h1>Add MCQ Question</h1>
+<form method="post">
+    <input asp-for="QuizId" type="hidden" />
+    <div class="mb-3">
+        <label asp-for="Text" class="form-label"></label>
+        <textarea asp-for="Text" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="OptionA" class="form-label"></label>
+        <input asp-for="OptionA" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="OptionB" class="form-label"></label>
+        <input asp-for="OptionB" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="OptionC" class="form-label"></label>
+        <input asp-for="OptionC" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="OptionD" class="form-label"></label>
+        <input asp-for="OptionD" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="CorrectOption" class="form-label"></label>
+        <select asp-for="CorrectOption" class="form-select">
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+            <option>D</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Points" class="form-label"></label>
+        <input asp-for="Points" class="form-control" />
+    </div>
+    <button class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,4 +1,19 @@
 @model Nexus.Web.ViewModels.Student.SubmitAssignmentViewModel
-@{ ViewData["Title"] = "Submit Assignment"; }
-<h1>Submit @Model.AssignmentTitle</h1><form method="post" enctype="multipart/form-data"><input asp-for="AssignmentId" type="hidden" /><input asp-for="AssignmentTitle" type="hidden" />
-<div class="mb-3"><label asp-for="File" class="form-label"></label><input asp-for="File" type="file" class="form-control" /><span asp-validation-for="File" class="text-danger"></span></div><button class="btn btn-primary">Submit</button></form>@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@{
+    ViewData["Title"] = "Submit Assignment";
+}
+<h1>Submit @Model.AssignmentTitle</h1>
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="AssignmentId" type="hidden" />
+    <input asp-for="AssignmentTitle" type="hidden" />
+    <div class="mb-3">
+        <label asp-for="File" class="form-label"></label>
+        <input asp-for="File" type="file" class="form-control" />
+        <span asp-validation-for="File" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary">Submit</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
