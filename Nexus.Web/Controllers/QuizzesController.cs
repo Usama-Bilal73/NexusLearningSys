@@ -30,6 +30,20 @@ public class QuizzesController : Controller
         return View(quizzes);
     }
 
+
+    [Authorize(Roles = ApplicationRoles.Teacher)]
+    public async Task<IActionResult> QuestionBank()
+    {
+        var teacherId = _userManager.GetUserId(User)!;
+        var questions = await _context.Questions.AsNoTracking()
+            .Include(q => q.Quiz)!.ThenInclude(q => q!.Course)
+            .Where(q => q.Quiz!.Course!.TeacherId == teacherId)
+            .OrderBy(q => q.Quiz!.Course!.Name)
+            .ThenBy(q => q.Quiz!.Title)
+            .ToListAsync();
+        return View(questions);
+    }
+
     [Authorize(Roles = ApplicationRoles.Teacher)]
     public async Task<IActionResult> Create() => View(await PopulateCoursesAsync(new QuizFormViewModel()));
 

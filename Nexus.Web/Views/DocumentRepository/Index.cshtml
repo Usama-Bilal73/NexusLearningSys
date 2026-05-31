@@ -1,0 +1,44 @@
+@model Nexus.Web.ViewModels.Repository.DocumentSearchViewModel
+@{ ViewData["Title"] = "Document Repository"; }
+<h1>Document Repository</h1>
+@if (User.IsInRole(ApplicationRoles.Teacher))
+{
+    <p><a class="btn btn-primary" asp-action="Upload">Upload PDF/DOCX/PPTX</a></p>
+}
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-4"><input asp-for="Query" class="form-control" placeholder="Search documents" /></div>
+    <div class="col-md-3"><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"><option value="">All courses</option></select></div>
+    <div class="col-md-3"><select asp-for="Category" asp-items="Model.Categories" class="form-select"><option value="">All categories</option></select></div>
+    <div class="col-md-2"><button class="btn btn-outline-primary w-100">Search</button></div>
+</form>
+<table class="table table-striped align-middle">
+    <thead><tr><th>Title</th><th>Course</th><th>Category</th><th>Type</th><th>Uploaded</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var document in Model.Documents)
+    {
+        <tr>
+            <td>
+                <strong>@document.Title</strong><br />
+                <small class="text-muted">@document.FileName</small>
+                @if (!string.IsNullOrWhiteSpace(document.Summary))
+                {
+                    <details class="mt-2"><summary>AI summary</summary><div class="small">@document.Summary</div></details>
+                }
+            </td>
+            <td>@document.CourseName</td>
+            <td>@document.Category</td>
+            <td>@document.MaterialType</td>
+            <td>@document.UploadedAtUtc.ToLocalTime().ToString("g")</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Download" asp-route-id="@document.Id">Download</a>
+                @if (User.IsInRole(ApplicationRoles.Teacher))
+                {
+                    <form asp-action="GenerateSummary" asp-route-id="@document.Id" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-primary">AI Summary</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

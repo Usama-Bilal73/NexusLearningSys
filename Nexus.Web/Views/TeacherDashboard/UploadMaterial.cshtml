@@ -3,30 +3,10 @@
     ViewData["Title"] = "Upload Material";
 }
 <h1>Upload Course Material</h1>
-<form method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="mb-3">
-        <label asp-for="CourseId" class="form-label"></label>
-        <select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select>
-        <span asp-validation-for="CourseId" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="MaterialType" class="form-label"></label>
-        <select asp-for="MaterialType" asp-items="Html.GetEnumSelectList<Nexus.Data.Models.CourseMaterialType>()" class="form-select"></select>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="File" class="form-label"></label>
-        <input asp-for="File" type="file" class="form-control" />
-        <span asp-validation-for="File" class="text-danger"></span>
-    </div>
-    <button class="btn btn-primary">Upload</button>
-</form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+<form method="post" enctype="multipart/form-data"><div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="CourseId" class="form-label"></label><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select><span asp-validation-for="CourseId" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="MaterialType" class="form-label"></label><select asp-for="MaterialType" asp-items="Html.GetEnumSelectList<Nexus.Data.Models.CourseMaterialType>()" class="form-select"></select></div>
+<div class="mb-3"><label asp-for="Title" class="form-label"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Category" class="form-label"></label><input asp-for="Category" class="form-control" /><span asp-validation-for="Category" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="File" class="form-label"></label><input asp-for="File" type="file" class="form-control" /><span asp-validation-for="File" class="text-danger"></span></div>
+<button class="btn btn-primary">Upload</button></form>@section Scripts { <partial name="_ValidationScriptsPartial" /> }

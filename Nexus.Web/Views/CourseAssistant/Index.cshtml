@@ -1,0 +1,23 @@
+@model Nexus.Web.ViewModels.Repository.CourseAssistantChatViewModel
+@{ ViewData["Title"] = "AI Course Assistant"; }
+<h1>AI Course Assistant</h1>
+<p class="text-muted">Ask questions against uploaded syllabus and lecture-note PDFs. The retrieval step indexes stored document text before sending grounded context to OpenAI.</p>
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3"><label asp-for="CourseId" class="form-label"></label><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select><span asp-validation-for="CourseId" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="Question" class="form-label"></label><textarea asp-for="Question" rows="4" class="form-control"></textarea><span asp-validation-for="Question" class="text-danger"></span></div>
+    <button class="btn btn-primary">Ask Assistant</button>
+</form>
+@if (!string.IsNullOrWhiteSpace(Model.Answer))
+{
+    <section class="card mt-4">
+        <div class="card-header">Answer</div>
+        <div class="card-body"><p style="white-space: pre-wrap">@Model.Answer</p></div>
+    </section>
+    @if (Model.Sources.Any())
+    {
+        <h2 class="h5 mt-3">Sources</h2>
+        <ul>@foreach (var source in Model.Sources) { <li>@source</li> }</ul>
+    }
+}
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
