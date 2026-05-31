@@ -3,10 +3,14 @@ using Nexus.Business.Services;
 using Nexus.Data.DependencyInjection;
 using Nexus.Data.Identity;
 using Nexus.Data.Persistence;
+using Nexus.Data.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter());
+});
 builder.Services.AddRazorPages();
 
 builder.Services.AddDataAccess(builder.Configuration);
@@ -14,12 +18,14 @@ builder.Services.AddBusinessServices();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
-        options.SignIn.RequireConfirmedAccount = true;
+        options.SignIn.RequireConfirmedAccount = false;
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
         options.Password.RequireUppercase = true;
         options.Password.RequireNonAlphanumeric = true;
         options.Password.RequiredLength = 8;
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.User.RequireUniqueEmail = true;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
@@ -31,6 +37,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+
+await IdentitySeeder.SeedAsync(app.Services);
 
 if (!app.Environment.IsDevelopment())
 {
