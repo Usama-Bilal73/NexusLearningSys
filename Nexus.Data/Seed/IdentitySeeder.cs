@@ -19,6 +19,7 @@ public static class IdentitySeeder
         var services = scope.ServiceProvider;
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("IdentitySeeder");
         var dbContext = services.GetRequiredService<ApplicationDbContext>();
+        await BaselineExistingSchemaAsync(dbContext);
         await dbContext.Database.MigrateAsync();
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -72,5 +73,65 @@ public static class IdentitySeeder
                 logger.LogError("Failed to add default admin account {Email} to Admin role: {Errors}", adminEmail, string.Join(", ", roleResult.Errors.Select(error => error.Description)));
             }
         }
+    }
+
+    private static async Task BaselineExistingSchemaAsync(ApplicationDbContext dbContext)
+    {
+        if (!dbContext.Database.IsSqlServer() || !await dbContext.Database.CanConnectAsync())
+        {
+            return;
+        }
+
+        await dbContext.Database.ExecuteSqlRawAsync(
+            @"IF OBJECT_ID(N'[nexus].[AspNetUsers]', N'U') IS NOT NULL
+BEGIN
+    IF SCHEMA_ID(N'nexus') IS NULL
+    BEGIN
+        EXEC(N'CREATE SCHEMA [nexus]');
+    END;
+
+    IF OBJECT_ID(N'[nexus].[__EFMigrationsHistory]', N'U') IS NULL
+    BEGIN
+        CREATE TABLE [nexus].[__EFMigrationsHistory]
+        (
+            [MigrationId] nvarchar(150) NOT NULL,
+            [ProductVersion] nvarchar(32) NOT NULL,
+            CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+        );
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM [nexus].[__EFMigrationsHistory] WHERE [MigrationId] = N'20260531000000_AddIdentityAuthentication')
+    BEGIN
+        INSERT INTO [nexus].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+        VALUES (N'20260531000000_AddIdentityAuthentication', N'9.0.0');
+    END;
+
+    IF OBJECT_ID(N'[nexus].[Courses]', N'U') IS NOT NULL
+       AND OBJECT_ID(N'[nexus].[Assignments]', N'U') IS NOT NULL
+       AND OBJECT_ID(N'[nexus].[Submissions]', N'U') IS NOT NULL
+       AND NOT EXISTS (SELECT 1 FROM [nexus].[__EFMigrationsHistory] WHERE [MigrationId] = N'20260531001000_AddAcademicModels')
+    BEGIN
+        INSERT INTO [nexus].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+        VALUES (N'20260531001000_AddAcademicModels', N'9.0.0');
+    END;
+
+    IF OBJECT_ID(N'[nexus].[CourseMaterials]', N'U') IS NOT NULL
+       AND OBJECT_ID(N'[nexus].[Quizzes]', N'U') IS NOT NULL
+       AND COL_LENGTH(N'[nexus].[Submissions]', N'Id') IS NOT NULL
+       AND NOT EXISTS (SELECT 1 FROM [nexus].[__EFMigrationsHistory] WHERE [MigrationId] = N'20260531002000_AddTeacherStudentGradeQuizModules')
+    BEGIN
+        INSERT INTO [nexus].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+        VALUES (N'20260531002000_AddTeacherStudentGradeQuizModules', N'9.0.0');
+    END;
+
+    IF OBJECT_ID(N'[nexus].[CourseMaterials]', N'U') IS NOT NULL
+       AND COL_LENGTH(N'[nexus].[CourseMaterials]', N'Category') IS NOT NULL
+       AND COL_LENGTH(N'[nexus].[CourseMaterials]', N'AiSummary') IS NOT NULL
+       AND NOT EXISTS (SELECT 1 FROM [nexus].[__EFMigrationsHistory] WHERE [MigrationId] = N'20260531130000_AddRepositoryAiAnalyticsFields')
+    BEGIN
+        INSERT INTO [nexus].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+        VALUES (N'20260531130000_AddRepositoryAiAnalyticsFields', N'9.0.0');
+    END;
+END");
     }
 }
