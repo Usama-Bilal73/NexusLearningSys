@@ -17,12 +17,14 @@ public class TeacherDashboardController : Controller
     private readonly ApplicationDbContext _context;
     private readonly IFileStorageService _fileStorage;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IPerformanceAnalyticsService _performanceAnalytics;
 
-    public TeacherDashboardController(ApplicationDbContext context, IFileStorageService fileStorage, UserManager<ApplicationUser> userManager)
+    public TeacherDashboardController(ApplicationDbContext context, IFileStorageService fileStorage, UserManager<ApplicationUser> userManager, IPerformanceAnalyticsService performanceAnalytics)
     {
         _context = context;
         _fileStorage = fileStorage;
         _userManager = userManager;
+        _performanceAnalytics = performanceAnalytics;
     }
 
     public async Task<IActionResult> Index()
@@ -41,7 +43,8 @@ public class TeacherDashboardController : Controller
             })
             .OrderBy(course => course.Name)
             .ToListAsync();
-        return View(new TeacherDashboardViewModel { Courses = courses });
+        var alerts = await _performanceAnalytics.GetAtRiskAlertsAsync(teacherId);
+        return View(new TeacherDashboardViewModel { Courses = courses, AtRiskAlerts = alerts });
     }
 
     public async Task<IActionResult> Assignments()
@@ -126,6 +129,7 @@ public class TeacherDashboardController : Controller
                 CourseId = model.CourseId,
                 Title = model.Title.Trim(),
                 MaterialType = model.MaterialType,
+                Category = model.Category.Trim(),
                 OriginalFileName = model.File!.FileName,
                 ContentType = model.File.ContentType,
                 FilePath = path,

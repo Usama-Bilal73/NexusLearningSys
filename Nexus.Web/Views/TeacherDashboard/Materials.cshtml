@@ -1,6 +1,6 @@
 @model IEnumerable<Nexus.Data.Models.CourseMaterial>
 @{ ViewData["Title"] = "Course Materials"; }
-<h1>Course Materials</h1><p><a class="btn btn-primary" asp-action="UploadMaterial">Upload</a></p>
-<table class="table"><thead><tr><th>Course</th><th>Type</th><th>Title</th><th>File</th><th>Uploaded</th></tr></thead><tbody>
-@foreach (var m in Model) { <tr><td>@m.Course?.Name</td><td>@m.MaterialType</td><td>@m.Title</td><td><a href="@m.FilePath">@m.OriginalFileName</a></td><td>@m.UploadedAtUtc</td></tr> }
+<h1>Course Materials</h1><p><a class="btn btn-primary" asp-action="UploadMaterial">Upload</a> <a class="btn btn-outline-primary" asp-controller="DocumentRepository" asp-action="Index">Repository</a></p>
+<table class="table"><thead><tr><th>Course</th><th>Category</th><th>Type</th><th>Title</th><th>File</th><th>Uploaded</th></tr></thead><tbody>
+@foreach (var m in Model) { <tr><td>@m.Course?.Name</td><td>@m.Category</td><td>@m.MaterialType</td><td>@m.Title</td><td><a href="@m.FilePath">@m.OriginalFileName</a></td><td>@m.UploadedAtUtc</td></tr> }
 </tbody></table>

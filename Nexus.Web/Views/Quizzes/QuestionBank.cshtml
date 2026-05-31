@@ -1,0 +1,20 @@
+@model IEnumerable<Nexus.Data.Models.Question>
+@{ ViewData["Title"] = "Question Bank"; }
+<h1>Question Bank</h1>
+<p><a class="btn btn-primary" asp-action="Create">Create Quiz</a></p>
+<table class="table table-striped align-middle">
+    <thead><tr><th>Course</th><th>Quiz</th><th>Question</th><th>Options</th><th>Correct</th><th>Points</th></tr></thead>
+    <tbody>
+    @foreach (var question in Model)
+    {
+        <tr>
+            <td>@question.Quiz?.Course?.Name</td>
+            <td>@question.Quiz?.Title</td>
+            <td>@question.Text</td>
+            <td class="small">A. @question.OptionA<br />B. @question.OptionB<br />C. @question.OptionC<br />D. @question.OptionD</td>
+            <td>@question.CorrectOption</td>
+            <td>@question.Points</td>
+        </tr>
+    }
+    </tbody>
+</table>

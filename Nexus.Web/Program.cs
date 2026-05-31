@@ -17,6 +17,11 @@ builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddBusinessServices();
 builder.Services.AddScoped<Nexus.Web.Services.IFileStorageService, Nexus.Web.Services.FileStorageService>();
 builder.Services.AddScoped<Nexus.Web.Services.IGradebookService, Nexus.Web.Services.GradebookService>();
+builder.Services.AddScoped<Nexus.Web.Services.IPdfTextExtractor, Nexus.Web.Services.PdfTextExtractor>();
+builder.Services.AddHttpClient<Nexus.Web.Services.IOpenAiLearningService, Nexus.Web.Services.OpenAiLearningService>();
+builder.Services.AddSingleton<Nexus.Web.Services.IVectorDatabaseService, Nexus.Web.Services.InMemoryVectorDatabaseService>();
+builder.Services.AddScoped<Nexus.Web.Services.ICourseRagService, Nexus.Web.Services.CourseRagService>();
+builder.Services.AddScoped<Nexus.Web.Services.IPerformanceAnalyticsService, Nexus.Web.Services.PerformanceAnalyticsService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
