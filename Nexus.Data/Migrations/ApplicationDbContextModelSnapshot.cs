@@ -15,6 +15,12 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
+        BuildModel(modelBuilder);
+#pragma warning restore 612, 618
+    }
+
+    internal static void BuildModel(ModelBuilder modelBuilder)
+    {
         modelBuilder
             .HasDefaultSchema("nexus")
             .HasAnnotation("ProductVersion", "9.0.0")
@@ -114,30 +120,19 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
             b.ToTable("AspNetUsers", "nexus");
         });
 
-
-        modelBuilder.Entity("Nexus.Data.Models.Department", b =>
+        modelBuilder.Entity("Nexus.Data.Models.Answer", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-            b.Property<string>("Name").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+            b.Property<bool>("IsCorrect").HasColumnType("bit");
+            b.Property<decimal>("PointsEarned").HasPrecision(5, 2).HasColumnType("decimal(5,2)");
+            b.Property<int>("QuestionId").HasColumnType("int");
+            b.Property<int>("QuizAttemptId").HasColumnType("int");
+            b.Property<string>("SelectedOption").HasMaxLength(1).HasColumnType("nvarchar(1)");
             b.HasKey("Id");
-            b.HasIndex("Name").IsUnique();
-            b.ToTable("Departments", "nexus");
-        });
-
-        modelBuilder.Entity("Nexus.Data.Models.Course", b =>
-        {
-            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
-            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-            b.Property<int?>("DepartmentId").HasColumnType("int");
-            b.Property<string>("Name").IsRequired().HasMaxLength(160).HasColumnType("nvarchar(160)");
-            b.Property<string>("Semester").IsRequired().HasMaxLength(60).HasColumnType("nvarchar(60)");
-            b.Property<string>("TeacherId").IsRequired().HasMaxLength(450).HasColumnType("nvarchar(450)");
-            b.HasKey("Id");
-            b.HasIndex("DepartmentId");
-            b.HasIndex("TeacherId");
-            b.HasIndex("Name", "Semester").IsUnique();
-            b.ToTable("Courses", "nexus");
+            b.HasIndex("QuestionId");
+            b.HasIndex("QuizAttemptId", "QuestionId").IsUnique();
+            b.ToTable("Answers", "nexus");
         });
 
         modelBuilder.Entity("Nexus.Data.Models.Assignment", b =>
@@ -151,6 +146,49 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
             b.HasKey("Id");
             b.HasIndex("CourseId", "Deadline");
             b.ToTable("Assignments", "nexus");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.Course", b =>
+        {
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            b.Property<int?>("DepartmentId").HasColumnType("int");
+            b.Property<string>("Name").IsRequired().HasMaxLength(160).HasColumnType("nvarchar(160)");
+            b.Property<string>("Semester").IsRequired().HasMaxLength(60).HasColumnType("nvarchar(60)");
+            b.Property<string>("TeacherId").IsRequired().HasMaxLength(450).HasColumnType("nvarchar(450)");
+            b.HasKey("Id");
+            b.HasIndex("DepartmentId");
+            b.HasIndex("Name", "Semester").IsUnique();
+            b.HasIndex("TeacherId");
+            b.ToTable("Courses", "nexus");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.CourseMaterial", b =>
+        {
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            b.Property<string>("ContentType").HasMaxLength(120).HasColumnType("nvarchar(120)");
+            b.Property<int>("CourseId").HasColumnType("int");
+            b.Property<string>("FilePath").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+            b.Property<int>("MaterialType").HasColumnType("int");
+            b.Property<string>("OriginalFileName").IsRequired().HasMaxLength(260).HasColumnType("nvarchar(260)");
+            b.Property<string>("Title").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+            b.Property<DateTime>("UploadedAtUtc").HasColumnType("datetime2");
+            b.Property<string>("UploadedByTeacherId").IsRequired().HasMaxLength(450).HasColumnType("nvarchar(450)");
+            b.HasKey("Id");
+            b.HasIndex("CourseId", "MaterialType");
+            b.HasIndex("UploadedByTeacherId");
+            b.ToTable("CourseMaterials", "nexus");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.Department", b =>
+        {
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            b.Property<string>("Name").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+            b.HasKey("Id");
+            b.HasIndex("Name").IsUnique();
+            b.ToTable("Departments", "nexus");
         });
 
         modelBuilder.Entity("Nexus.Data.Models.Enrollment", b =>
@@ -175,14 +213,68 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
             b.ToTable("Grades", "nexus");
         });
 
+        modelBuilder.Entity("Nexus.Data.Models.Question", b =>
+        {
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            b.Property<string>("CorrectOption").IsRequired().HasMaxLength(1).HasColumnType("nvarchar(1)");
+            b.Property<string>("OptionA").IsRequired().HasMaxLength(400).HasColumnType("nvarchar(400)");
+            b.Property<string>("OptionB").IsRequired().HasMaxLength(400).HasColumnType("nvarchar(400)");
+            b.Property<string>("OptionC").IsRequired().HasMaxLength(400).HasColumnType("nvarchar(400)");
+            b.Property<string>("OptionD").IsRequired().HasMaxLength(400).HasColumnType("nvarchar(400)");
+            b.Property<decimal>("Points").HasPrecision(5, 2).HasColumnType("decimal(5,2)");
+            b.Property<int>("QuizId").HasColumnType("int");
+            b.Property<string>("Text").IsRequired().HasMaxLength(1000).HasColumnType("nvarchar(1000)");
+            b.HasKey("Id");
+            b.HasIndex("QuizId");
+            b.ToTable("Questions", "nexus");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.Quiz", b =>
+        {
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            b.Property<DateTime?>("ClosesAtUtc").HasColumnType("datetime2");
+            b.Property<int>("CourseId").HasColumnType("int");
+            b.Property<string>("Description").HasMaxLength(1000).HasColumnType("nvarchar(1000)");
+            b.Property<int>("DurationMinutes").HasColumnType("int");
+            b.Property<bool>("IsPublished").HasColumnType("bit");
+            b.Property<DateTime?>("OpensAtUtc").HasColumnType("datetime2");
+            b.Property<string>("Title").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+            b.HasKey("Id");
+            b.HasIndex("CourseId", "IsPublished");
+            b.ToTable("Quizzes", "nexus");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.QuizAttempt", b =>
+        {
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            b.Property<bool>("IsAutoSubmitted").HasColumnType("bit");
+            b.Property<int>("QuizId").HasColumnType("int");
+            b.Property<decimal>("Score").HasPrecision(6, 2).HasColumnType("decimal(6,2)");
+            b.Property<DateTime>("StartedAtUtc").HasColumnType("datetime2");
+            b.Property<string>("StudentId").IsRequired().HasMaxLength(450).HasColumnType("nvarchar(450)");
+            b.Property<DateTime?>("SubmittedAtUtc").HasColumnType("datetime2");
+            b.HasKey("Id");
+            b.HasIndex("QuizId", "StudentId");
+            b.HasIndex("StudentId");
+            b.ToTable("QuizAttempts", "nexus");
+        });
+
         modelBuilder.Entity("Nexus.Data.Models.Submission", b =>
         {
-            b.Property<string>("StudentId").HasMaxLength(450).HasColumnType("nvarchar(450)");
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
             b.Property<int>("AssignmentId").HasColumnType("int");
+            b.Property<string>("Feedback").HasMaxLength(1000).HasColumnType("nvarchar(1000)");
             b.Property<string>("FilePath").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+            b.Property<string>("Status").IsRequired().HasMaxLength(40).HasColumnType("nvarchar(40)");
+            b.Property<string>("StudentId").IsRequired().HasMaxLength(450).HasColumnType("nvarchar(450)");
             b.Property<DateTime>("SubmittedAt").HasColumnType("datetime2");
-            b.HasKey("StudentId", "AssignmentId");
+            b.HasKey("Id");
             b.HasIndex("AssignmentId");
+            b.HasIndex("StudentId", "AssignmentId", "SubmittedAt");
             b.ToTable("Submissions", "nexus");
         });
 
@@ -212,6 +304,20 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
             b.HasOne("Nexus.Data.Identity.ApplicationUser", null).WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.Cascade).IsRequired();
         });
 
+        modelBuilder.Entity("Nexus.Data.Models.Answer", b =>
+        {
+            b.HasOne("Nexus.Data.Models.Question", "Question").WithMany().HasForeignKey("QuestionId").OnDelete(DeleteBehavior.Restrict).IsRequired();
+            b.HasOne("Nexus.Data.Models.QuizAttempt", "QuizAttempt").WithMany("Answers").HasForeignKey("QuizAttemptId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.Navigation("Question");
+            b.Navigation("QuizAttempt");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.Assignment", b =>
+        {
+            b.HasOne("Nexus.Data.Models.Course", "Course").WithMany("Assignments").HasForeignKey("CourseId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.Navigation("Course");
+        });
+
         modelBuilder.Entity("Nexus.Data.Models.Course", b =>
         {
             b.HasOne("Nexus.Data.Models.Department", "Department").WithMany("Courses").HasForeignKey("DepartmentId").OnDelete(DeleteBehavior.SetNull);
@@ -220,10 +326,12 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
             b.Navigation("Teacher");
         });
 
-        modelBuilder.Entity("Nexus.Data.Models.Assignment", b =>
+        modelBuilder.Entity("Nexus.Data.Models.CourseMaterial", b =>
         {
-            b.HasOne("Nexus.Data.Models.Course", "Course").WithMany("Assignments").HasForeignKey("CourseId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.HasOne("Nexus.Data.Models.Course", "Course").WithMany("Materials").HasForeignKey("CourseId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.HasOne("Nexus.Data.Identity.ApplicationUser", "UploadedByTeacher").WithMany().HasForeignKey("UploadedByTeacherId").OnDelete(DeleteBehavior.Restrict).IsRequired();
             b.Navigation("Course");
+            b.Navigation("UploadedByTeacher");
         });
 
         modelBuilder.Entity("Nexus.Data.Models.Enrollment", b =>
@@ -242,6 +350,26 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
             b.Navigation("Student");
         });
 
+        modelBuilder.Entity("Nexus.Data.Models.Question", b =>
+        {
+            b.HasOne("Nexus.Data.Models.Quiz", "Quiz").WithMany("Questions").HasForeignKey("QuizId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.Navigation("Quiz");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.Quiz", b =>
+        {
+            b.HasOne("Nexus.Data.Models.Course", "Course").WithMany("Quizzes").HasForeignKey("CourseId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.Navigation("Course");
+        });
+
+        modelBuilder.Entity("Nexus.Data.Models.QuizAttempt", b =>
+        {
+            b.HasOne("Nexus.Data.Models.Quiz", "Quiz").WithMany("Attempts").HasForeignKey("QuizId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.HasOne("Nexus.Data.Identity.ApplicationUser", "Student").WithMany().HasForeignKey("StudentId").OnDelete(DeleteBehavior.Cascade).IsRequired();
+            b.Navigation("Quiz");
+            b.Navigation("Student");
+        });
+
         modelBuilder.Entity("Nexus.Data.Models.Submission", b =>
         {
             b.HasOne("Nexus.Data.Models.Assignment", "Assignment").WithMany("Submissions").HasForeignKey("AssignmentId").OnDelete(DeleteBehavior.Cascade).IsRequired();
@@ -256,9 +384,15 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
             b.Navigation("Assignments");
             b.Navigation("Enrollments");
             b.Navigation("Grades");
+            b.Navigation("Materials");
+            b.Navigation("Quizzes");
         });
         modelBuilder.Entity("Nexus.Data.Models.Department", b => b.Navigation("Courses"));
-
-#pragma warning restore 612, 618
+        modelBuilder.Entity("Nexus.Data.Models.Quiz", b =>
+        {
+            b.Navigation("Attempts");
+            b.Navigation("Questions");
+        });
+        modelBuilder.Entity("Nexus.Data.Models.QuizAttempt", b => b.Navigation("Answers"));
     }
 }
