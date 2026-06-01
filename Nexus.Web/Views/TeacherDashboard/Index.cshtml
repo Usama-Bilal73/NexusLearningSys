@@ -1,27 +1,45 @@
 @model Nexus.Web.ViewModels.Teacher.TeacherDashboardViewModel
 @{ ViewData["Title"] = "Teacher Dashboard"; }
-<h1>Teacher Dashboard</h1>
-<p>
-    <a class="btn btn-primary" asp-action="CreateAssignment">Create Assignment</a>
-    <a class="btn btn-secondary" asp-action="UploadMaterial">Upload Course Material</a>
-    <a class="btn btn-outline-primary" asp-controller="DocumentRepository" asp-action="Upload">Upload Repository Document</a>
-    <a class="btn btn-outline-primary" asp-controller="Gradebook" asp-action="Index">Gradebook</a>
-    <a class="btn btn-outline-primary" asp-controller="Quizzes" asp-action="Index">Quizzes</a>
-</p>
+
+<section class="dashboard-hero teacher-hero mb-4">
+    <div>
+        <span class="eyebrow">Teacher workspace</span>
+        <h1>Welcome back to your command center</h1>
+        <p>Track courses, publish assignments, manage learning materials, and spot students who need support from one polished dashboard.</p>
+    </div>
+    <div class="hero-actions">
+        <a class="btn btn-light" asp-action="CreateAssignment">Create Assignment</a>
+        <a class="btn btn-outline-light" asp-action="UploadMaterial">Upload Material</a>
+    </div>
+</section>
+
+<div class="quick-actions mb-4">
+    <a class="quick-action" asp-controller="DocumentRepository" asp-action="Upload"><span>📄</span><strong>Repository Upload</strong><small>PDF, DOCX, PPTX</small></a>
+    <a class="quick-action" asp-controller="Gradebook" asp-action="Index"><span>📊</span><strong>Gradebook</strong><small>Review performance</small></a>
+    <a class="quick-action" asp-controller="Quizzes" asp-action="Index"><span>✅</span><strong>Quizzes</strong><small>Manage assessments</small></a>
+    <a class="quick-action" asp-controller="CourseAssistant" asp-action="Index"><span>✨</span><strong>AI Assistant</strong><small>Course support</small></a>
+</div>
+
 @if (Model.AtRiskAlerts.Any())
 {
-    <div class="alert alert-warning">
-        <h2 class="h5">At-Risk Student Alerts</h2>
+    <section class="insight-card warning-card mb-4">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow text-warning">Attention needed</span>
+                <h2>At-risk student alerts</h2>
+            </div>
+            <span class="badge rounded-pill bg-warning text-dark">@Model.AtRiskAlerts.Count alerts</span>
+        </div>
         <div class="table-responsive">
-            <table class="table table-sm align-middle mb-0">
+            <table class="table admin-table align-middle mb-0">
                 <thead><tr><th>Student</th><th>Course</th><th>Status</th><th>Reason</th><th>Assignments</th><th>Quiz Avg</th><th>Submissions</th></tr></thead>
                 <tbody>
                 @foreach (var alert in Model.AtRiskAlerts)
                 {
                     <tr>
-                        <td>@alert.StudentName</td>
+                        <td><strong>@alert.StudentName</strong></td>
                         <td>@alert.CourseName</td>
-                        <td><span class="badge bg-danger">@alert.Status</span></td>
+                        <td><span class="badge bg-danger-subtle text-danger">@alert.Status</span></td>
                         <td>@alert.Reason</td>
                         <td>@alert.AssignmentAverage.ToString("0.##")%</td>
                         <td>@alert.QuizAverage.ToString("0.##")</td>
@@ -31,8 +49,38 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 }
-<table class="table"><thead><tr><th>Course</th><th>Semester</th><th>Students</th><th>Assignments</th><th>Materials</th></tr></thead><tbody>
-@foreach (var c in Model.Courses) { <tr><td>@c.Name</td><td>@c.Semester</td><td>@c.StudentCount</td><td>@c.AssignmentCount</td><td>@c.MaterialCount</td></tr> }
-</tbody></table>
+
+<section class="insight-card">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">Assigned courses</span>
+            <h2>Your courses at a glance</h2>
+        </div>
+    </div>
+    @if (Model.Courses.Any())
+    {
+        <div class="course-grid">
+        @foreach (var c in Model.Courses)
+        {
+            <article class="course-card">
+                <div class="course-icon">@c.Name.FirstOrDefault()</div>
+                <div>
+                    <h3>@c.Name</h3>
+                    <p>@c.Semester</p>
+                </div>
+                <dl>
+                    <div><dt>Students</dt><dd>@c.StudentCount</dd></div>
+                    <div><dt>Assignments</dt><dd>@c.AssignmentCount</dd></div>
+                    <div><dt>Materials</dt><dd>@c.MaterialCount</dd></div>
+                </dl>
+            </article>
+        }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">No courses are assigned to your profile yet.</div>
+    }
+</section>

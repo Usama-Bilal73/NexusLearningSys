@@ -378,3 +378,227 @@ a:hover {
     white-space: nowrap;
   }
 }
+
+.dashboard-hero,
+.page-hero,
+.insight-card,
+.tip-card,
+.quick-action,
+.course-card {
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, .72);
+  box-shadow: 0 20px 55px rgba(15, 23, 42, .08);
+}
+
+.dashboard-hero,
+.page-hero {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(239,246,255,.86));
+  border-radius: 28px;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  position: relative;
+}
+
+.dashboard-hero::after,
+.page-hero::after {
+  background: radial-gradient(circle, rgba(79, 70, 229, .18), transparent 64%);
+  content: "";
+  height: 16rem;
+  pointer-events: none;
+  position: absolute;
+  right: -5rem;
+  top: -6rem;
+  width: 16rem;
+}
+
+.teacher-hero {
+  background: radial-gradient(circle at top right, rgba(6, 182, 212, .32), transparent 34%), linear-gradient(135deg, #312e81 0%, #4f46e5 58%, #06b6d4 100%);
+  color: #fff;
+}
+
+.dashboard-hero h1,
+.page-hero h1,
+.section-heading h2,
+.tip-card h2,
+.course-card h3 {
+  font-weight: 850;
+  letter-spacing: -.04em;
+}
+
+.dashboard-hero h1,
+.page-hero h1 {
+  margin: .35rem 0;
+}
+
+.dashboard-hero p,
+.page-hero p {
+  color: rgba(15, 23, 42, .68);
+  font-size: 1.05rem;
+  margin: 0;
+  max-width: 760px;
+}
+
+.teacher-hero .eyebrow,
+.teacher-hero p {
+  color: rgba(255, 255, 255, .82);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.quick-actions,
+.course-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.quick-action {
+  background: rgba(255, 255, 255, .82);
+  border-radius: 22px;
+  color: var(--nexus-ink);
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  padding: 1.2rem;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.quick-action:hover,
+.course-card:hover {
+  box-shadow: 0 28px 70px rgba(79, 70, 229, .16);
+  color: var(--nexus-primary-dark);
+  transform: translateY(-4px);
+}
+
+.quick-action span {
+  font-size: 1.8rem;
+}
+
+.quick-action small,
+.course-card p,
+.course-card dt {
+  color: var(--nexus-muted);
+}
+
+.insight-card,
+.tip-card {
+  background: rgba(255, 255, 255, .88);
+  border-radius: 24px;
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.warning-card {
+  border-color: rgba(245, 158, 11, .35);
+}
+
+.section-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.course-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.9));
+  border-radius: 24px;
+  padding: 1.25rem;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.course-icon {
+  align-items: center;
+  background: linear-gradient(135deg, var(--nexus-primary), var(--nexus-accent));
+  border-radius: 18px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 1.35rem;
+  font-weight: 900;
+  height: 56px;
+  justify-content: center;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  width: 56px;
+}
+
+.course-card h3 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.course-card dl {
+  display: grid;
+  gap: .75rem;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 1rem 0 0;
+}
+
+.course-card dt {
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.course-card dd {
+  font-size: 1.25rem;
+  font-weight: 850;
+  margin: 0;
+}
+
+.form-card .form-label {
+  color: #334155;
+  font-weight: 750;
+}
+
+.file-drop {
+  background: #f8fafc;
+  border: 1px dashed #94a3b8;
+  padding: 1rem;
+}
+
+.tip-card {
+  position: sticky;
+  top: 7rem;
+}
+
+.summary-box {
+  background: #f8fafc;
+  border: 1px solid var(--nexus-border);
+  border-radius: 14px;
+  padding: .65rem .8rem;
+}
+
+.summary-box summary {
+  color: var(--nexus-primary-dark);
+  cursor: pointer;
+  font-weight: 750;
+}
+
+@media (max-width: 767px) {
+  .dashboard-hero,
+  .page-hero,
+  .section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .course-card dl {
+    grid-template-columns: 1fr;
+  }
+}
