@@ -20,7 +20,7 @@ public static class IdentitySeeder
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("IdentitySeeder");
         var dbContext = services.GetRequiredService<ApplicationDbContext>();
         await BaselineExistingSchemaAsync(dbContext);
-        await dbContext.Database.MigrateAsync();
+        
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();

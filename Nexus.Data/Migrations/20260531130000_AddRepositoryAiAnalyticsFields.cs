@@ -6,7 +6,6 @@ using Nexus.Data.Persistence;
 
 namespace Nexus.Data.Migrations;
 
-[DbContext(typeof(ApplicationDbContext))]
 [Migration("20260531130000_AddRepositoryAiAnalyticsFields")]
 public partial class AddRepositoryAiAnalyticsFields : Migration
 {
