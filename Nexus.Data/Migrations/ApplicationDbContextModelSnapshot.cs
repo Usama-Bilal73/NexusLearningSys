@@ -167,15 +167,20 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            b.Property<string>("AiSummary").HasColumnType("nvarchar(max)");
+            b.Property<string>("Category").IsRequired().HasMaxLength(80).HasColumnType("nvarchar(80)");
             b.Property<string>("ContentType").HasMaxLength(120).HasColumnType("nvarchar(120)");
             b.Property<int>("CourseId").HasColumnType("int");
+            b.Property<string>("ExtractedText").HasColumnType("nvarchar(max)");
             b.Property<string>("FilePath").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
             b.Property<int>("MaterialType").HasColumnType("int");
             b.Property<string>("OriginalFileName").IsRequired().HasMaxLength(260).HasColumnType("nvarchar(260)");
+            b.Property<DateTime?>("SummarizedAtUtc").HasColumnType("datetime2");
             b.Property<string>("Title").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
             b.Property<DateTime>("UploadedAtUtc").HasColumnType("datetime2");
             b.Property<string>("UploadedByTeacherId").IsRequired().HasMaxLength(450).HasColumnType("nvarchar(450)");
             b.HasKey("Id");
+            b.HasIndex("CourseId", "Category");
             b.HasIndex("CourseId", "MaterialType");
             b.HasIndex("UploadedByTeacherId");
             b.ToTable("CourseMaterials", "nexus");

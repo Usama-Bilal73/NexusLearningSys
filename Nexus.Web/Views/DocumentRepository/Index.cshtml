@@ -1,44 +1,63 @@
 @model Nexus.Web.ViewModels.Repository.DocumentSearchViewModel
 @{ ViewData["Title"] = "Document Repository"; }
-<h1>Document Repository</h1>
-@if (User.IsInRole(ApplicationRoles.Teacher))
-{
-    <p><a class="btn btn-primary" asp-action="Upload">Upload PDF/DOCX/PPTX</a></p>
-}
-<form method="get" class="row g-2 mb-4">
-    <div class="col-md-4"><input asp-for="Query" class="form-control" placeholder="Search documents" /></div>
-    <div class="col-md-3"><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"><option value="">All courses</option></select></div>
-    <div class="col-md-3"><select asp-for="Category" asp-items="Model.Categories" class="form-select"><option value="">All categories</option></select></div>
-    <div class="col-md-2"><button class="btn btn-outline-primary w-100">Search</button></div>
-</form>
-<table class="table table-striped align-middle">
-    <thead><tr><th>Title</th><th>Course</th><th>Category</th><th>Type</th><th>Uploaded</th><th></th></tr></thead>
-    <tbody>
-    @foreach (var document in Model.Documents)
+
+<section class="page-hero mb-4">
+    <div>
+        <span class="eyebrow">Knowledge hub</span>
+        <h1>Document Repository</h1>
+        <p>Search shared course documents, browse AI summaries, and keep learning resources organized.</p>
+    </div>
+    @if (User.IsInRole(ApplicationRoles.Teacher))
     {
-        <tr>
-            <td>
-                <strong>@document.Title</strong><br />
-                <small class="text-muted">@document.FileName</small>
-                @if (!string.IsNullOrWhiteSpace(document.Summary))
-                {
-                    <details class="mt-2"><summary>AI summary</summary><div class="small">@document.Summary</div></details>
-                }
-            </td>
-            <td>@document.CourseName</td>
-            <td>@document.Category</td>
-            <td>@document.MaterialType</td>
-            <td>@document.UploadedAtUtc.ToLocalTime().ToString("g")</td>
-            <td class="text-end">
-                <a class="btn btn-sm btn-outline-secondary" asp-action="Download" asp-route-id="@document.Id">Download</a>
-                @if (User.IsInRole(ApplicationRoles.Teacher))
-                {
-                    <form asp-action="GenerateSummary" asp-route-id="@document.Id" method="post" class="d-inline">
-                        <button class="btn btn-sm btn-outline-primary">AI Summary</button>
-                    </form>
-                }
-            </td>
-        </tr>
+        <div class="hero-actions"><a class="btn btn-primary" asp-action="Upload">Upload PDF/DOCX/PPTX</a></div>
     }
-    </tbody>
-</table>
+</section>
+
+<section class="insight-card mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-lg-4"><label asp-for="Query" class="form-label">Search</label><input asp-for="Query" class="form-control" placeholder="Search title, category, file, or summary" /></div>
+        <div class="col-md-3"><label asp-for="CourseId" class="form-label">Course</label><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"><option value="">All courses</option></select></div>
+        <div class="col-md-3"><label asp-for="Category" class="form-label">Category</label><select asp-for="Category" asp-items="Model.Categories" class="form-select"><option value="">All categories</option></select></div>
+        <div class="col-md-2"><button class="btn btn-outline-primary w-100">Search</button></div>
+    </form>
+</section>
+
+<section class="insight-card">
+    <div class="table-responsive">
+        <table class="table admin-table align-middle mb-0">
+            <thead><tr><th>Document</th><th>Course</th><th>Category</th><th>Type</th><th>Uploaded</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var document in Model.Documents)
+            {
+                <tr>
+                    <td>
+                        <strong>@document.Title</strong><br />
+                        <small class="text-muted">@document.FileName</small>
+                        @if (!string.IsNullOrWhiteSpace(document.Summary))
+                        {
+                            <details class="summary-box mt-2"><summary>AI summary</summary><div class="small mt-2">@document.Summary</div></details>
+                        }
+                    </td>
+                    <td>@document.CourseName</td>
+                    <td><span class="badge bg-primary-subtle text-primary">@document.Category</span></td>
+                    <td>@document.MaterialType</td>
+                    <td>@document.UploadedAtUtc.ToLocalTime().ToString("g")</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Download" asp-route-id="@document.Id">Download</a>
+                        @if (User.IsInRole(ApplicationRoles.Teacher))
+                        {
+                            <form asp-action="GenerateSummary" asp-route-id="@document.Id" method="post" class="d-inline">
+                                <button class="btn btn-sm btn-outline-primary">AI Summary</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    @if (!Model.Documents.Any())
+    {
+        <div class="empty-state mt-3">No documents match your filters yet.</div>
+    }
+</section>

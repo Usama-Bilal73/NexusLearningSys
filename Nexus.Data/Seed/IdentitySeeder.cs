@@ -21,6 +21,7 @@ public static class IdentitySeeder
         var dbContext = services.GetRequiredService<ApplicationDbContext>();
         await BaselineExistingSchemaAsync(dbContext);
         await dbContext.Database.MigrateAsync();
+        await EnsureCourseMaterialRepositoryColumnsAsync(dbContext);
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
@@ -73,6 +74,50 @@ public static class IdentitySeeder
                 logger.LogError("Failed to add default admin account {Email} to Admin role: {Errors}", adminEmail, string.Join(", ", roleResult.Errors.Select(error => error.Description)));
             }
         }
+    }
+
+    private static async Task EnsureCourseMaterialRepositoryColumnsAsync(ApplicationDbContext dbContext)
+    {
+        if (!dbContext.Database.IsSqlServer() || !await dbContext.Database.CanConnectAsync())
+        {
+            return;
+        }
+
+        await dbContext.Database.ExecuteSqlRawAsync(
+            @"IF OBJECT_ID(N'[nexus].[CourseMaterials]', N'U') IS NOT NULL
+BEGIN
+    IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'Category') IS NULL
+    BEGIN
+        ALTER TABLE [nexus].[CourseMaterials]
+        ADD [Category] nvarchar(80) NOT NULL
+            CONSTRAINT [DF_CourseMaterials_Category] DEFAULT N'General';
+    END;
+
+    IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'ExtractedText') IS NULL
+    BEGIN
+        ALTER TABLE [nexus].[CourseMaterials] ADD [ExtractedText] nvarchar(max) NULL;
+    END;
+
+    IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'AiSummary') IS NULL
+    BEGIN
+        ALTER TABLE [nexus].[CourseMaterials] ADD [AiSummary] nvarchar(max) NULL;
+    END;
+
+    IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'SummarizedAtUtc') IS NULL
+    BEGIN
+        ALTER TABLE [nexus].[CourseMaterials] ADD [SummarizedAtUtc] datetime2 NULL;
+    END;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM sys.indexes
+        WHERE [name] = N'IX_CourseMaterials_CourseId_Category'
+          AND [object_id] = OBJECT_ID(N'[nexus].[CourseMaterials]'))
+    BEGIN
+        CREATE INDEX [IX_CourseMaterials_CourseId_Category]
+        ON [nexus].[CourseMaterials] ([CourseId], [Category]);
+    END;
+END");
     }
 
     private static async Task BaselineExistingSchemaAsync(ApplicationDbContext dbContext)
