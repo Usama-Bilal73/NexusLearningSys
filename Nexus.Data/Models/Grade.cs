@@ -30,8 +30,20 @@ public class Grade
     [Range(0, 100)]
     public decimal TotalMarks { get; set; }
 
-    public void RecalculateTotal()
+    [Column(TypeName = "decimal(5,2)")]
+    [Range(0, 100)]
+    public decimal QuizMarks { get; set; }
+
+    public void RecalculateTotal(
+        decimal assignmentWeight = 20m,
+        decimal midtermWeight    = 30m,
+        decimal finalWeight      = 50m,
+        decimal quizWeight       = 0m)
     {
-        TotalMarks = Math.Round((AssignmentMarks * 0.20m) + (MidtermMarks * 0.30m) + (FinalMarks * 0.50m), 2);
+        TotalMarks = Math.Round(
+            (AssignmentMarks * assignmentWeight / 100m) +
+            (MidtermMarks    * midtermWeight    / 100m) +
+            (FinalMarks      * finalWeight      / 100m) +
+            (QuizMarks       * quizWeight       / 100m), 2);
     }
 }

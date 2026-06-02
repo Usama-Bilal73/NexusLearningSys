@@ -8,6 +8,7 @@ using Nexus.Data.Models;
 using Nexus.Data.Persistence;
 using Nexus.Web.Services;
 using Nexus.Web.ViewModels.Repository;
+using Nexus.Web.ViewModels.Teacher;
 
 namespace Nexus.Web.Controllers;
 
@@ -32,6 +33,14 @@ public class DocumentRepositoryController : Controller
 
     public async Task<IActionResult> Index(DocumentSearchViewModel model)
     {
+        try
+        {
+            await EnsureRepositoryColumnsAsync();
+        }
+        catch
+        {
+            // ignore - we'll surface DB errors below if necessary
+        }
         var query = _context.CourseMaterials.AsNoTracking().Include(m => m.Course).AsQueryable();
         if (User.IsInRole(ApplicationRoles.Teacher))
         {
@@ -73,6 +82,14 @@ public class DocumentRepositoryController : Controller
     [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = ApplicationRoles.Teacher)]
     public async Task<IActionResult> Upload(DocumentUploadViewModel model, CancellationToken cancellationToken)
     {
+        try
+        {
+            await EnsureRepositoryColumnsAsync();
+        }
+        catch
+        {
+            // ignore
+        }
         if (!await OwnsCourseAsync(model.CourseId)) ModelState.AddModelError(nameof(model.CourseId), "Select one of your courses.");
         if (model.File is null) ModelState.AddModelError(nameof(model.File), "Select a file.");
         else if (!RepositoryExtensions.Contains(Path.GetExtension(model.File.FileName))) ModelState.AddModelError(nameof(model.File), "Only PDF, DOCX, and PPTX files are allowed in the repository.");
@@ -156,11 +173,69 @@ public class DocumentRepositoryController : Controller
         return await _context.Courses.AnyAsync(course => course.Id == courseId && course.TeacherId == teacherId);
     }
 
-    private async Task<DocumentUploadViewModel> PopulateCoursesAsync(DocumentUploadViewModel model)
+    private async Task<T> PopulateCoursesAsync<T>(T model) where T : class
     {
         var teacherId = _userManager.GetUserId(User)!;
-        model.Courses = await _context.Courses.AsNoTracking().Where(course => course.TeacherId == teacherId).OrderBy(course => course.Name).Select(course => new SelectListItem($"{course.Name} ({course.Semester})", course.Id.ToString())).ToListAsync();
+        var courses = await _context.Courses.AsNoTracking().Where(course => course.TeacherId == teacherId).OrderBy(course => course.Name).ToListAsync();
+        var items = courses.Select(course => new SelectListItem($"{course.Name} ({course.Semester})", course.Id.ToString())).ToList();
+        switch (model)
+        {
+            case DocumentUploadViewModel docUpload: docUpload.Courses = items; break;
+            case AssignmentFormViewModel assignment: assignment.Courses = items; break;
+            case MaterialUploadViewModel material: material.Courses = items; break;
+        }
         return model;
+    }
+
+    public async Task<IActionResult> CreateAssignment(int? courseId)
+    {
+        var model = await PopulateCoursesAsync(new AssignmentFormViewModel());
+        if (courseId.HasValue) model.CourseId = courseId.Value;
+        return View(model);
+    }
+
+    public async Task<IActionResult> UploadMaterial(int? courseId)
+    {
+        var model = await PopulateCoursesAsync(new MaterialUploadViewModel());
+        if (courseId.HasValue) model.CourseId = courseId.Value;
+        return View(model);
+    }
+
+    private async Task EnsureRepositoryColumnsAsync()
+    {
+        var sql = @"IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'Category') IS NULL
+BEGIN
+    ALTER TABLE [nexus].[CourseMaterials]
+    ADD [Category] nvarchar(80) NOT NULL
+        CONSTRAINT [DF_CourseMaterials_Category] DEFAULT N'General';
+END
+
+IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'ExtractedText') IS NULL
+BEGIN
+    ALTER TABLE [nexus].[CourseMaterials] ADD [ExtractedText] nvarchar(max) NULL;
+END
+
+IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'AiSummary') IS NULL
+BEGIN
+    ALTER TABLE [nexus].[CourseMaterials] ADD [AiSummary] nvarchar(max) NULL;
+END
+
+IF COL_LENGTH(N'[nexus].[CourseMaterials]', N'SummarizedAtUtc') IS NULL
+BEGIN
+    ALTER TABLE [nexus].[CourseMaterials] ADD [SummarizedAtUtc] datetime2 NULL;
+END
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE [name] = N'IX_CourseMaterials_CourseId_Category'
+      AND [object_id] = OBJECT_ID(N'[nexus].[CourseMaterials]'))
+BEGIN
+    CREATE INDEX [IX_CourseMaterials_CourseId_Category]
+    ON [nexus].[CourseMaterials] ([CourseId], [Category]);
+END";
+
+        await _context.Database.ExecuteSqlRawAsync(sql);
     }
 
     private async Task PopulateFiltersAsync(DocumentSearchViewModel model)

@@ -15,11 +15,13 @@ public class QuizzesController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly Services.IGradebookService _gradebookService;
 
-    public QuizzesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public QuizzesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Services.IGradebookService gradebookService)
     {
         _context = context;
         _userManager = userManager;
+        _gradebookService = gradebookService;
     }
 
     [Authorize(Roles = ApplicationRoles.Teacher)]
@@ -108,6 +110,19 @@ public class QuizzesController : Controller
         var studentId = _userManager.GetUserId(User)!;
         var quiz = await FindAvailableQuizAsync(id, studentId);
         if (quiz is null) return NotFound();
+
+        // Exam Security: enforce MaxAttempts
+        if (quiz.MaxAttempts > 0)
+        {
+            var completedAttempts = await _context.QuizAttempts
+                .CountAsync(a => a.QuizId == id && a.StudentId == studentId && a.SubmittedAtUtc != null);
+            if (completedAttempts >= quiz.MaxAttempts)
+            {
+                TempData["Error"] = $"You have used all {quiz.MaxAttempts} attempt(s) for this quiz.";
+                return RedirectToAction(nameof(Available));
+            }
+        }
+
         var attempt = await _context.QuizAttempts.Include(a => a.Answers).FirstOrDefaultAsync(a => a.QuizId == id && a.StudentId == studentId && a.SubmittedAtUtc == null);
         if (attempt is null)
         {
@@ -118,14 +133,26 @@ public class QuizzesController : Controller
         var expires = attempt.StartedAtUtc.AddMinutes(quiz.DurationMinutes);
         var remaining = Math.Max(0, (int)(expires - DateTime.UtcNow).TotalSeconds);
         if (remaining == 0) return await SubmitAttempt(attempt.Id, true, new Dictionary<int, string?>());
+
+        // Shuffle questions if enabled
+        var questions = quiz.ShuffleQuestions
+            ? quiz.Questions.OrderBy(_ => Guid.NewGuid()).ToList()
+            : quiz.Questions.ToList();
+
+        var completedCount = quiz.MaxAttempts > 0
+            ? await _context.QuizAttempts.CountAsync(a => a.QuizId == id && a.StudentId == studentId && a.SubmittedAtUtc != null)
+            : 0;
+        var attemptsRemaining = quiz.MaxAttempts == 0 ? -1 : quiz.MaxAttempts - completedCount;
+
         return View(new QuizAttemptViewModel
         {
-            QuizId = quiz.Id,
-            AttemptId = attempt.Id,
-            Title = quiz.Title,
+            QuizId           = quiz.Id,
+            AttemptId        = attempt.Id,
+            Title            = quiz.Title,
             RemainingSeconds = remaining,
-            Questions = quiz.Questions.Select(q => new QuestionAttemptViewModel { Id = q.Id, Text = q.Text, OptionA = q.OptionA, OptionB = q.OptionB, OptionC = q.OptionC, OptionD = q.OptionD }).ToList(),
-            Answers = attempt.Answers.ToDictionary(a => a.QuestionId, a => a.SelectedOption)
+            AttemptsRemaining = attemptsRemaining,
+            Questions        = questions.Select(q => new QuestionAttemptViewModel { Id = q.Id, Text = q.Text, OptionA = q.OptionA, OptionB = q.OptionB, OptionC = q.OptionC, OptionD = q.OptionD }).ToList(),
+            Answers          = attempt.Answers.ToDictionary(a => a.QuestionId, a => a.SelectedOption)
         });
     }
 
@@ -148,6 +175,12 @@ public class QuizzesController : Controller
             _context.Answers.Add(answer);
         }
         await _context.SaveChangesAsync();
+
+        if (attempt.Quiz != null)
+        {
+            await _gradebookService.UpdateStudentQuizMarksAndTotalAsync(studentId, attempt.Quiz.CourseId);
+        }
+
         return RedirectToAction(nameof(Result), new { id = attempt.Id });
     }
 

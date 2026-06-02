@@ -1,3 +1,54 @@
 @model IEnumerable<Nexus.Web.ViewModels.Gradebook.GradeEntryViewModel>
-@{ ViewData["Title"] = "Gradebook"; }
-<h1>Gradebook</h1><table class="table"><thead><tr><th>Course</th><th>Student</th><th>Assignment</th><th>Midterm</th><th>Final</th><th>Total</th><th></th></tr></thead><tbody>@foreach (var g in Model) { <tr><td>@g.CourseName</td><td>@g.StudentName</td><td>@g.AssignmentMarks</td><td>@g.MidtermMarks</td><td>@g.FinalMarks</td><td>@g.TotalMarks</td><td><a asp-action="Edit" asp-route-studentId="@g.StudentId" asp-route-courseId="@g.CourseId">Enter Marks</a></td></tr> }</tbody></table>
+@{
+    ViewData["Title"] = "Gradebook";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Gradebook</h1>
+    @if (ViewBag.CourseId != null)
+    {
+        <a asp-action="Weights" asp-route-courseId="@ViewBag.CourseId" class="btn btn-outline-primary">
+            Configure Grading Weights
+        </a>
+    }
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table table-hover align-middle bg-white border shadow-sm rounded">
+    <thead class="table-light">
+        <tr>
+            <th>Course</th>
+            <th>Student</th>
+            <th>Assignment</th>
+            <th>Midterm</th>
+            <th>Final</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.CourseName</td>
+                <td>@g.StudentName</td>
+                <td>@g.AssignmentMarks</td>
+                <td>@g.MidtermMarks</td>
+                <td>@g.FinalMarks</td>
+                <td><strong>@g.TotalMarks</strong></td>
+                <td>
+                    <a asp-action="Edit" asp-route-studentId="@g.StudentId" asp-route-courseId="@g.CourseId" class="btn btn-sm btn-primary">
+                        Enter Marks
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

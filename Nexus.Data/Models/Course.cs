@@ -24,6 +24,10 @@ public class Course
 
     public Department? Department { get; set; }
 
+    public int? SemesterId { get; set; }
+
+    public Semester? AcademicSemester { get; set; }
+
     public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
     public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();

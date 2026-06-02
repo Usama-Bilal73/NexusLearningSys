@@ -1,0 +1,104 @@
+@model IEnumerable<Nexus.Data.Models.Attendance>
+@using Nexus.Data.Models
+@{
+    ViewData["Title"] = "My Attendance";
+    var courseId = (int?)ViewBag.CourseId;
+    var courses  = (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Courses;
+}
+
+<div class="mb-4">
+    <h1 class="h3 fw-bold">📅 My Attendance</h1>
+    <p class="text-muted">View your attendance records for each course</p>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label fw-semibold">Select Course</label>
+                <select name="courseId" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Choose a course --</option>
+                    @foreach (var c in courses)
+                    {
+                        if (c.Value == courseId?.ToString())
+                        {
+                            <option value="@c.Value" selected="selected">@c.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@c.Value">@c.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (courseId.HasValue)
+{
+    var present = Model.Count(a => a.Status == AttendanceStatus.Present);
+    var late    = Model.Count(a => a.Status == AttendanceStatus.Late);
+    var absent  = Model.Count(a => a.Status == AttendanceStatus.Absent);
+    var total   = Model.Select(a => a.Date.Date).Distinct().Count();
+    var pct     = total == 0 ? 0m : Math.Round((present + late) * 100m / total, 1);
+    var pctClass = pct >= 75 ? "success" : pct >= 60 ? "warning" : "danger";
+
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-md-3">
+            <div class="card border-0 bg-success text-white text-center p-3 shadow-sm">
+                <div class="h2 fw-bold mb-0">@present</div><div class="small">Present</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 bg-warning text-dark text-center p-3 shadow-sm">
+                <div class="h2 fw-bold mb-0">@late</div><div class="small">Late</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 bg-danger text-white text-center p-3 shadow-sm">
+                <div class="h2 fw-bold mb-0">@absent</div><div class="small">Absent</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 bg-@pctClass text-white text-center p-3 shadow-sm">
+                <div class="h2 fw-bold mb-0">@pct%</div><div class="small">Attendance Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Day</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        var badge = a.Status switch {
+                            AttendanceStatus.Present => "bg-success",
+                            AttendanceStatus.Late    => "bg-warning text-dark",
+                            _                        => "bg-danger"
+                        };
+                        <tr>
+                            <td class="fw-semibold">@a.Date.ToString("dd MMM yyyy")</td>
+                            <td class="text-muted">@a.Date.ToString("dddd")</td>
+                            <td><span class="badge @badge px-3 py-2">@a.Status</span></td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">No attendance records yet for this course.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

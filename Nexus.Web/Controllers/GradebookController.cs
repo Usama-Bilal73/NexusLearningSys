@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Data.Identity;
+using Nexus.Data.Models;
 using Nexus.Data.Persistence;
 using Nexus.Web.Services;
 using Nexus.Web.ViewModels.Gradebook;
@@ -39,6 +40,8 @@ public class GradebookController : Controller
             FinalMarks = e.Course.Grades.Where(g => g.StudentId == e.StudentId).Select(g => g.FinalMarks).FirstOrDefault(),
             TotalMarks = e.Course.Grades.Where(g => g.StudentId == e.StudentId).Select(g => g.TotalMarks).FirstOrDefault()
         }).OrderBy(r => r.CourseName).ThenBy(r => r.StudentName).ToListAsync();
+
+        ViewBag.CourseId = courseId;
         return View(rows);
     }
 
@@ -68,6 +71,36 @@ public class GradebookController : Controller
         if (!ModelState.IsValid) return View(model);
         await _gradebookService.UpsertGradeAsync(model.StudentId, model.CourseId, model.AssignmentMarks, model.MidtermMarks, model.FinalMarks);
         TempData["Success"] = "Grade saved.";
+        return RedirectToAction(nameof(Index), new { courseId = model.CourseId });
+    }
+
+    public async Task<IActionResult> Weights(int courseId)
+    {
+        if (!await OwnsCourseAsync(courseId)) return Forbid();
+        var course = await _context.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.Id == courseId);
+        if (course == null) return NotFound();
+
+        var weights = await _gradebookService.GetWeightsOrDefaultAsync(courseId);
+        ViewBag.CourseName = course.Name;
+        return View(weights);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Weights(GradeWeight model)
+    {
+        if (!await OwnsCourseAsync(model.CourseId)) return Forbid();
+        if (!model.IsValid)
+        {
+            ModelState.AddModelError(string.Empty, "The sum of all weights (Assignment + Midterm + Final + Quiz) must equal exactly 100%. Current sum: " + (model.AssignmentWeight + model.MidtermWeight + model.FinalWeight + model.QuizWeight) + "%");
+            var course = await _context.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.Id == model.CourseId);
+            ViewBag.CourseName = course?.Name;
+            return View(model);
+        }
+
+        await _gradebookService.SaveWeightsAsync(model);
+        await _gradebookService.RecalculateAllGradesForCourseAsync(model.CourseId);
+
+        TempData["Success"] = "Course weights updated and student grades recalculated successfully.";
         return RedirectToAction(nameof(Index), new { courseId = model.CourseId });
     }
 

@@ -22,6 +22,12 @@ public class Quiz
 
     public bool IsPublished { get; set; }
 
+    /// <summary>0 = unlimited attempts. Default 1 attempt per student.</summary>
+    public int MaxAttempts { get; set; } = 1;
+
+    /// <summary>Randomize question order for each attempt.</summary>
+    public bool ShuffleQuestions { get; set; }
+
     public int CourseId { get; set; }
 
     public Course? Course { get; set; }

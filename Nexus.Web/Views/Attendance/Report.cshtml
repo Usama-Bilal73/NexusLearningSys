@@ -1,0 +1,99 @@
+@model IEnumerable<AttendanceSummaryRow>
+@{
+    ViewData["Title"] = "Attendance Report";
+    var courseId = (int)ViewBag.CourseId;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0 fw-bold">📊 Attendance Report</h1>
+        <p class="text-muted small mb-0">@ViewBag.CourseName</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Mark" asp-route-courseId="@courseId" class="btn btn-success">
+            <i class="bi bi-check2-square me-1"></i>Mark Today
+        </a>
+        <a asp-controller="Reports" asp-action="DownloadAttendance" asp-route-courseId="@courseId"
+           class="btn btn-outline-danger">
+            <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 bg-primary text-white text-center p-3 shadow-sm">
+            <div class="h1 fw-bold mb-0">@Model.Count()</div>
+            <div class="small">Total Students</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-success text-white text-center p-3 shadow-sm">
+            <div class="h1 fw-bold mb-0">@Model.Count(r => r.AttendancePercent >= 75)</div>
+            <div class="small">≥ 75% Attendance</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-warning text-dark text-center p-3 shadow-sm">
+            <div class="h1 fw-bold mb-0">@Model.Count(r => r.AttendancePercent is >= 60 and < 75)</div>
+            <div class="small">60–74% (At Risk)</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-danger text-white text-center p-3 shadow-sm">
+            <div class="h1 fw-bold mb-0">@Model.Count(r => r.AttendancePercent < 60)</div>
+            <div class="small">&lt; 60% (Critical)</div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Student</th>
+                    <th class="text-center text-success">Present</th>
+                    <th class="text-center text-warning">Late</th>
+                    <th class="text-center text-danger">Absent</th>
+                    <th class="text-center">Total Days</th>
+                    <th class="text-center">Attendance %</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 1; }
+                @foreach (var row in Model.OrderByDescending(r => r.AttendancePercent))
+                {
+                    var pctClass = row.AttendancePercent >= 75 ? "text-success" :
+                                   row.AttendancePercent >= 60 ? "text-warning" : "text-danger";
+                    <tr>
+                        <td class="text-muted">@i</td>
+                        <td class="fw-semibold">@row.StudentName</td>
+                        <td class="text-center fw-bold text-success">@row.Present</td>
+                        <td class="text-center fw-bold text-warning">@row.Late</td>
+                        <td class="text-center fw-bold text-danger">@row.Absent</td>
+                        <td class="text-center">@row.Total</td>
+                        <td class="text-center">
+                            <span class="fw-bold @pctClass fs-6">@row.AttendancePercent%</span>
+                            <div class="progress mt-1" style="height:4px;">
+                                <div class="progress-bar bg-@(row.AttendancePercent >= 75 ? "success" : row.AttendancePercent >= 60 ? "warning" : "danger")"
+                                     style="width:@row.AttendancePercent%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    i++;
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bi bi-calendar-x display-4 d-block mb-2"></i>
+                            No attendance records yet. <a asp-action="Mark" asp-route-courseId="@courseId">Mark attendance</a>.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

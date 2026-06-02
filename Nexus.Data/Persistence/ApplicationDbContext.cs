@@ -34,10 +34,30 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Answer> Answers => Set<Answer>();
 
+    // Abu Bakar modules
+    public DbSet<Semester> Semesters => Set<Semester>();
+
+    public DbSet<Attendance> Attendances => Set<Attendance>();
+
+    public DbSet<GradeWeight> GradeWeights => Set<GradeWeight>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.HasDefaultSchema("nexus");
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        builder.Entity<Attendance>(entity =>
+        {
+            entity.HasOne(a => a.Student)
+                .WithMany()
+                .HasForeignKey(a => a.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(a => a.MarkedByTeacher)
+                .WithMany()
+                .HasForeignKey(a => a.MarkedByTeacherId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }

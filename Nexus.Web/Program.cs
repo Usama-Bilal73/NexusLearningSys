@@ -22,6 +22,8 @@ builder.Services.AddHttpClient<Nexus.Web.Services.IOpenAiLearningService, Nexus.
 builder.Services.AddSingleton<Nexus.Web.Services.IVectorDatabaseService, Nexus.Web.Services.InMemoryVectorDatabaseService>();
 builder.Services.AddScoped<Nexus.Web.Services.ICourseRagService, Nexus.Web.Services.CourseRagService>();
 builder.Services.AddScoped<Nexus.Web.Services.IPerformanceAnalyticsService, Nexus.Web.Services.PerformanceAnalyticsService>();
+builder.Services.AddScoped<Nexus.Web.Services.IGpaCalculationService, Nexus.Web.Services.GpaCalculationService>();
+builder.Services.AddScoped<Nexus.Web.Services.IReportService, Nexus.Web.Services.ReportService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -45,7 +47,23 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-await IdentitySeeder.SeedAsync(app.Services);
+// Run seeding conditionally to avoid crashing the host on startup in environments where the
+// database may be misaligned. Enable by setting "RunMigrationsOnStartup": true in configuration.
+var config = app.Services.GetRequiredService<IConfiguration>();
+var runMigrations = config.GetValue<bool>("RunMigrationsOnStartup");
+if (runMigrations)
+{
+    try
+    {
+        await IdentitySeeder.SeedAsync(app.Services);
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+        logger.LogError(ex, "An error occurred while running IdentitySeeder. Startup will continue.");
+        Console.WriteLine($"IdentitySeeder error: {ex.Message}");
+    }
+}
 
 if (!app.Environment.IsDevelopment())
 {

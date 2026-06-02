@@ -304,6 +304,47 @@ namespace Nexus.Data.Migrations
                     b.ToTable("Assignments", "nexus");
                 });
 
+            modelBuilder.Entity("Nexus.Data.Models.Attendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("MarkedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MarkedByTeacherId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("MarkedByTeacherId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Attendances", "nexus");
+                });
+
             modelBuilder.Entity("Nexus.Data.Models.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -325,6 +366,9 @@ namespace Nexus.Data.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<int?>("SemesterId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TeacherId")
                         .IsRequired()
                         .HasMaxLength(450)
@@ -333,6 +377,8 @@ namespace Nexus.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("SemesterId");
 
                     b.HasIndex("TeacherId");
 
@@ -466,6 +512,9 @@ namespace Nexus.Data.Migrations
                         .HasPrecision(5, 2)
                         .HasColumnType("decimal(5,2)");
 
+                    b.Property<decimal>("QuizMarks")
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<decimal>("TotalMarks")
                         .HasPrecision(5, 2)
                         .HasColumnType("decimal(5,2)");
@@ -475,6 +524,36 @@ namespace Nexus.Data.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Grades", "nexus");
+                });
+
+            modelBuilder.Entity("Nexus.Data.Models.GradeWeight", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AssignmentWeight")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("FinalWeight")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<decimal>("MidtermWeight")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<decimal>("QuizWeight")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("GradeWeights", "nexus");
                 });
 
             modelBuilder.Entity("Nexus.Data.Models.Question", b =>
@@ -553,8 +632,14 @@ namespace Nexus.Data.Migrations
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MaxAttempts")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("OpensAtUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("ShuffleQuestions")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -604,6 +689,40 @@ namespace Nexus.Data.Migrations
                     b.HasIndex("QuizId", "StudentId");
 
                     b.ToTable("QuizAttempts", "nexus");
+                });
+
+            modelBuilder.Entity("Nexus.Data.Models.Semester", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Semesters", "nexus");
                 });
 
             modelBuilder.Entity("Nexus.Data.Models.Submission", b =>
@@ -729,6 +848,33 @@ namespace Nexus.Data.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("Nexus.Data.Models.Attendance", b =>
+                {
+                    b.HasOne("Nexus.Data.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Nexus.Data.Identity.ApplicationUser", "MarkedByTeacher")
+                        .WithMany()
+                        .HasForeignKey("MarkedByTeacherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Nexus.Data.Identity.ApplicationUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("MarkedByTeacher");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Nexus.Data.Models.Course", b =>
                 {
                     b.HasOne("Nexus.Data.Models.Department", "Department")
@@ -736,11 +882,17 @@ namespace Nexus.Data.Migrations
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Nexus.Data.Models.Semester", "AcademicSemester")
+                        .WithMany("Courses")
+                        .HasForeignKey("SemesterId");
+
                     b.HasOne("Nexus.Data.Identity.ApplicationUser", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("AcademicSemester");
 
                     b.Navigation("Department");
 
@@ -802,6 +954,17 @@ namespace Nexus.Data.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Nexus.Data.Models.GradeWeight", b =>
+                {
+                    b.HasOne("Nexus.Data.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("Nexus.Data.Models.Question", b =>
@@ -897,6 +1060,11 @@ namespace Nexus.Data.Migrations
             modelBuilder.Entity("Nexus.Data.Models.QuizAttempt", b =>
                 {
                     b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("Nexus.Data.Models.Semester", b =>
+                {
+                    b.Navigation("Courses");
                 });
 #pragma warning restore 612, 618
         }

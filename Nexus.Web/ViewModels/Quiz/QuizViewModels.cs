@@ -12,6 +12,8 @@ public class QuizFormViewModel
     public DateTime? OpensAtUtc { get; set; }
     public DateTime? ClosesAtUtc { get; set; }
     public bool IsPublished { get; set; }
+    [Range(0, 10)] public int MaxAttempts { get; set; } = 1;
+    public bool ShuffleQuestions { get; set; }
     [Required] public int CourseId { get; set; }
     public IEnumerable<SelectListItem> Courses { get; set; } = [];
 }
@@ -34,6 +36,8 @@ public class QuizAttemptViewModel
     public int AttemptId { get; set; }
     public string Title { get; set; } = string.Empty;
     public int RemainingSeconds { get; set; }
+    /// <summary>-1 means unlimited. 0 means no more attempts.</summary>
+    public int AttemptsRemaining { get; set; } = -1;
     public IReadOnlyList<QuestionAttemptViewModel> Questions { get; set; } = [];
     public Dictionary<int, string?> Answers { get; set; } = [];
 }

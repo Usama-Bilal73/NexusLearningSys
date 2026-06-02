@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Nexus Learning System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Nexus.Web.styles.css" asp-append-version="true" />
 </head>
@@ -24,60 +28,61 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div id="primaryNavigation" class="navbar-collapse collapse">
+                    @{ var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? ""; var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? ""; }
                     <ul class="navbar-nav main-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(currentController == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-home me-2"></i>Home</a>
                         </li>
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                                <a class="nav-link @(currentController == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-chart-pie me-2"></i>Dashboard</a>
                             </li>
                             @if (User.IsInRole(ApplicationRoles.Teacher))
                             {
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Teacher</a>
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-chalkboard-teacher me-2"></i>Teacher</a>
                                     <ul class="dropdown-menu app-dropdown">
-                                        <li><a class="dropdown-item" asp-controller="TeacherDashboard" asp-action="Index">Assigned Courses</a></li>
-                                        <li><a class="dropdown-item" asp-controller="TeacherDashboard" asp-action="Assignments">Assignments</a></li>
-                                        <li><a class="dropdown-item" asp-controller="TeacherDashboard" asp-action="Materials">Course Materials</a></li>
-                                        <li><a class="dropdown-item" asp-controller="DocumentRepository" asp-action="Index">Document Repository</a></li>
-                                        <li><a class="dropdown-item" asp-controller="CourseAssistant" asp-action="Index">AI Course Assistant</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Gradebook" asp-action="Index">Gradebook</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Quizzes" asp-action="Index">Quizzes</a></li>
+                                        <li><a class="dropdown-item" asp-controller="TeacherDashboard" asp-action="Index"><i class="fa fa-book me-2"></i>Assigned Courses</a></li>
+                                        <li><a class="dropdown-item" asp-controller="TeacherDashboard" asp-action="Assignments"><i class="fa fa-tasks me-2"></i>Assignments</a></li>
+                                        <li><a class="dropdown-item" asp-controller="TeacherDashboard" asp-action="Materials"><i class="fa fa-folder-open me-2"></i>Course Materials</a></li>
+                                        <li><a class="dropdown-item" asp-controller="DocumentRepository" asp-action="Index"><i class="fa fa-file-lines me-2"></i>Document Repository</a></li>
+                                        <li><a class="dropdown-item" asp-controller="CourseAssistant" asp-action="Index"><i class="fa fa-robot me-2"></i>AI Course Assistant</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Gradebook" asp-action="Index"><i class="fa fa-table-list me-2"></i>Gradebook</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Quizzes" asp-action="Index"><i class="fa fa-question-circle me-2"></i>Quizzes</a></li>
                                     </ul>
                                 </li>
                             }
                             @if (User.IsInRole(ApplicationRoles.Student))
                             {
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Student</a>
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-user-graduate me-2"></i>Student</a>
                                     <ul class="dropdown-menu app-dropdown">
-                                        <li><a class="dropdown-item" asp-controller="StudentDashboard" asp-action="Courses">Courses</a></li>
-                                        <li><a class="dropdown-item" asp-controller="StudentDashboard" asp-action="Assignments">Assignments</a></li>
-                                        <li><a class="dropdown-item" asp-controller="StudentDashboard" asp-action="Grades">Grades</a></li>
-                                        <li><a class="dropdown-item" asp-controller="DocumentRepository" asp-action="Index">Documents</a></li>
-                                        <li><a class="dropdown-item" asp-controller="CourseAssistant" asp-action="Index">AI Course Assistant</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Quizzes" asp-action="Available">Quizzes</a></li>
+                                        <li><a class="dropdown-item" asp-controller="StudentDashboard" asp-action="Courses"><i class="fa fa-book-open me-2"></i>Courses</a></li>
+                                        <li><a class="dropdown-item" asp-controller="StudentDashboard" asp-action="Assignments"><i class="fa fa-clipboard-list me-2"></i>Assignments</a></li>
+                                        <li><a class="dropdown-item" asp-controller="StudentDashboard" asp-action="Grades"><i class="fa fa-graduation-cap me-2"></i>Grades</a></li>
+                                        <li><a class="dropdown-item" asp-controller="DocumentRepository" asp-action="Index"><i class="fa fa-file-lines me-2"></i>Documents</a></li>
+                                        <li><a class="dropdown-item" asp-controller="CourseAssistant" asp-action="Index"><i class="fa fa-robot me-2"></i>AI Course Assistant</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Quizzes" asp-action="Available"><i class="fa fa-stopwatch me-2"></i>Quizzes</a></li>
                                     </ul>
                                 </li>
                             }
                             @if (User.IsInRole(ApplicationRoles.Admin))
                             {
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-cogs me-2"></i>Admin</a>
                                     <ul class="dropdown-menu app-dropdown">
-                                        <li><a class="dropdown-item" asp-controller="Teachers" asp-action="Index">Teachers</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Students" asp-action="Index">Students</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Departments" asp-action="Index">Departments</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Courses" asp-action="Index">Courses</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Teachers" asp-action="Index"><i class="fa fa-chalkboard-teacher me-2"></i>Teachers</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Students" asp-action="Index"><i class="fa fa-users me-2"></i>Students</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Departments" asp-action="Index"><i class="fa fa-building me-2"></i>Departments</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Courses" asp-action="Index"><i class="fa fa-book me-2"></i>Courses</a></li>
                                         <li><hr class="dropdown-divider" /></li>
-                                        <li><a class="dropdown-item" asp-controller="RoleManagement" asp-action="Index">Role Management</a></li>
+                                        <li><a class="dropdown-item" asp-controller="RoleManagement" asp-action="Index"><i class="fa fa-user-shield me-2"></i>Role Management</a></li>
                                     </ul>
                                 </li>
                             }
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                                <a class="nav-link @(currentAction == "Privacy" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fa fa-shield-alt me-2"></i>Privacy</a>
                             </li>
                         }
                     </ul>
@@ -88,9 +93,65 @@
     </header>
 
     <div class="app-shell container-fluid px-3 px-lg-4">
-        <main role="main" class="app-content">
-            @RenderBody()
-        </main>
+        <div class="row gx-4">
+            <aside class="col-12 col-lg-3 col-xl-2 mb-3">
+                <nav class="dashboard-sidebar shadow-sm">
+                    <div class="sidebar-brand d-flex align-items-center mb-3">
+                        <div class="brand-icon small">N</div>
+                        <div class="ms-2">
+                            <div class="fw-bold">Nexus</div>
+                            <div class="small text-muted">Learning</div>
+                        </div>
+                    </div>
+                    <ul class="nav flex-column">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item"><a class="nav-link @(currentController == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index"><i class="fa fa-chart-pie me-2"></i>Dashboard</a></li>
+                            
+                            @if (User.IsInRole(ApplicationRoles.Admin))
+                            {
+                                <li class="nav-item"><a class="nav-link @(currentController == "Semesters" ? "active" : "")" asp-controller="Semesters" asp-action="Index"><i class="fa fa-calendar-alt me-2"></i>Semesters</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Courses" ? "active" : "")" asp-controller="Courses" asp-action="Index"><i class="fa fa-book me-2"></i>Courses</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Teachers" ? "active" : "")" asp-controller="Teachers" asp-action="Index"><i class="fa fa-chalkboard-teacher me-2"></i>Teachers</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Students" ? "active" : "")" asp-controller="Students" asp-action="Index"><i class="fa fa-users me-2"></i>Students</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Departments" ? "active" : "")" asp-controller="Departments" asp-action="Index"><i class="fa fa-building me-2"></i>Departments</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "RoleManagement" ? "active" : "")" asp-controller="RoleManagement" asp-action="Index"><i class="fa fa-user-shield me-2"></i>Roles</a></li>
+                            }
+                            else if (User.IsInRole(ApplicationRoles.Teacher))
+                            {
+                                <li class="nav-item"><a class="nav-link @(currentController == "TeacherDashboard" && currentAction == "Index" ? "active" : "")" asp-controller="TeacherDashboard" asp-action="Index"><i class="fa fa-book me-2"></i>Assigned Courses</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "TeacherDashboard" && currentAction == "Assignments" ? "active" : "")" asp-controller="TeacherDashboard" asp-action="Assignments"><i class="fa fa-tasks me-2"></i>Assignments</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "TeacherDashboard" && currentAction == "Materials" ? "active" : "")" asp-controller="TeacherDashboard" asp-action="Materials"><i class="fa fa-folder-open me-2"></i>Course Materials</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "DocumentRepository" ? "active" : "")" asp-controller="DocumentRepository" asp-action="Index"><i class="fa fa-file-lines me-2"></i>Repository</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "CourseAssistant" ? "active" : "")" asp-controller="CourseAssistant" asp-action="Index"><i class="fa fa-robot me-2"></i>AI Assistant</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Gradebook" ? "active" : "")" asp-controller="Gradebook" asp-action="Index"><i class="fa fa-table-list me-2"></i>Gradebook</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Quizzes" ? "active" : "")" asp-controller="Quizzes" asp-action="Index"><i class="fa fa-question-circle me-2"></i>Quizzes</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Attendance" ? "active" : "")" asp-controller="Attendance" asp-action="Index"><i class="fa fa-calendar-check me-2"></i>Attendance</a></li>
+                            }
+                            else if (User.IsInRole(ApplicationRoles.Student))
+                            {
+                                <li class="nav-item"><a class="nav-link @(currentController == "StudentDashboard" && currentAction == "Courses" ? "active" : "")" asp-controller="StudentDashboard" asp-action="Courses"><i class="fa fa-book-open me-2"></i>My Courses</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "StudentDashboard" && currentAction == "Assignments" ? "active" : "")" asp-controller="StudentDashboard" asp-action="Assignments"><i class="fa fa-clipboard-list me-2"></i>Assignments</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "StudentDashboard" && currentAction == "Grades" ? "active" : "")" asp-controller="StudentDashboard" asp-action="Grades"><i class="fa fa-graduation-cap me-2"></i>My Grades</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "DocumentRepository" ? "active" : "")" asp-controller="DocumentRepository" asp-action="Index"><i class="fa fa-file-lines me-2"></i>Documents</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "CourseAssistant" ? "active" : "")" asp-controller="CourseAssistant" asp-action="Index"><i class="fa fa-robot me-2"></i>AI Assistant</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Quizzes" ? "active" : "")" asp-controller="Quizzes" asp-action="Available"><i class="fa fa-stopwatch me-2"></i>Quizzes</a></li>
+                                <li class="nav-item"><a class="nav-link @(currentController == "Attendance" ? "active" : "")" asp-controller="Attendance" asp-action="MyAttendance"><i class="fa fa-calendar-check me-2"></i>My Attendance</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index"><i class="fa fa-home me-2"></i>Welcome</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login"><i class="fa fa-sign-in-alt me-2"></i>Login</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register"><i class="fa fa-user-plus me-2"></i>Register</a></li>
+                        }
+                    </ul>
+                </nav>
+            </aside>
+            <main role="main" class="col-12 col-lg-9 col-xl-10 app-content">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
     <footer class="app-footer">
@@ -101,6 +162,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
