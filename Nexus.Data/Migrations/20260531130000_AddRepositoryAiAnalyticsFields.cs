@@ -1,12 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Nexus.Data.Persistence;
-
 #nullable disable
 
 namespace Nexus.Data.Migrations;
 
-[Migration("20260531130000_AddRepositoryAiAnalyticsFields")]
 public partial class AddRepositoryAiAnalyticsFields : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)

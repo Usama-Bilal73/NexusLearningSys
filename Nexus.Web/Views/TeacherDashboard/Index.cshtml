@@ -1,100 +1,88 @@
-@model Nexus.Web.ViewModels.Teacher.TeacherDashboardViewModel
+﻿@model Nexus.Web.ViewModels.Teacher.TeacherDashboardViewModel
 @{ ViewData["Title"] = "Teacher Dashboard"; }
 
-<div class="admin-page-title mb-4">
-    <div class="d-flex align-items-start justify-content-between">
-        <div>
-            <h1 class="h3">Teacher Dashboard</h1>
-            <p class="small text-muted">Overview of your assigned courses, assignments and recent activity.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-primary" asp-action="CreateAssignment"><i class="fa fa-plus me-2"></i>Create Assignment</a>
-            <a class="btn btn-primary" asp-action="UploadMaterial"><i class="fa fa-upload me-2"></i>Upload Material</a>
-        </div>
+<section class="dashboard-hero teacher-hero mb-4">
+    <div>
+        <span class="eyebrow">Teacher workspace</span>
+        <h1>Welcome back to your command center</h1>
+        <p>Track courses, publish assignments, manage learning materials, and spot students who need support from one polished dashboard.</p>
     </div>
+    <div class="hero-actions">
+        <a class="btn btn-light" asp-action="CreateAssignment">Create Assignment</a>
+        <a class="btn btn-outline-light" asp-action="UploadMaterial">Upload Material</a>
+    </div>
+</section>
+
+<div class="quick-actions mb-4">
+    <a class="quick-action" asp-controller="DocumentRepository" asp-action="Upload"><span>📄</span><strong>Repository Upload</strong><small>PDF, DOCX, PPTX</small></a>
+    <a class="quick-action" asp-controller="Gradebook" asp-action="Index"><span>📊</span><strong>Gradebook</strong><small>Review performance</small></a>
+    <a class="quick-action" asp-controller="Quizzes" asp-action="Index"><span>✅</span><strong>Quizzes</strong><small>Manage assessments</small></a>
+    <a class="quick-action" asp-controller="CourseAssistant" asp-action="Index"><span>✨</span><strong>AI Assistant</strong><small>Course support</small></a>
+    <a class="quick-action" asp-controller="Attendance" asp-action="Index"><span>📅</span><strong>Attendance</strong><small>Mark and track</small></a>
+    <a class="quick-action" asp-controller="Reports" asp-action="Index"><span>📈</span><strong>Reports</strong><small>Generate PDF/Excel</small></a>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-12 col-md-4">
-        <div class="admin-tile">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="eyebrow">Courses</div>
-                    <h2 class="mt-2">@Model.Courses.Count()</h2>
-                </div>
-                <div class="tile-icon"><i class="fa fa-book"></i></div>
+@if (Model.AtRiskAlerts.Any())
+{
+    <section class="insight-card warning-card mb-4">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow text-warning">Attention needed</span>
+                <h2>At-risk student alerts</h2>
             </div>
+            <span class="badge rounded-pill bg-warning text-dark">@Model.AtRiskAlerts.Count() alerts</span>
         </div>
-    </div>
-    <div class="col-12 col-md-4">
-        <div class="admin-tile">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="eyebrow">Assignments</div>
-                    <h2 class="mt-2">@Model.Courses.Sum(c => c.AssignmentCount)</h2>
-                </div>
-                <div class="tile-icon"><i class="fa fa-tasks"></i></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-4">
-        <div class="admin-tile">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="eyebrow">Students</div>
-                    <h2 class="mt-2">@Model.Courses.Sum(c => c.StudentCount)</h2>
-                </div>
-                <div class="tile-icon"><i class="fa fa-users"></i></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-3">
-    <div class="col-12 col-lg-7">
-        <div class="card admin-card p-3">
-            <h5 class="mb-3">Course Materials Summary</h5>
-            <canvas id="materialsChart" height="120"></canvas>
-        </div>
-    </div>
-    <div class="col-12 col-lg-5">
-        <div class="card admin-card p-3">
-            <h5 class="mb-3">At-Risk Students</h5>
-            @if (Model.AtRiskAlerts.Any())
-            {
-                <ul class="list-group list-group-flush">
+        <div class="table-responsive">
+            <table class="table admin-table align-middle mb-0">
+                <thead><tr><th>Student</th><th>Course</th><th>Status</th><th>Reason</th><th>Assignments</th><th>Quiz Avg</th><th>Submissions</th></tr></thead>
+                <tbody>
                 @foreach (var alert in Model.AtRiskAlerts)
                 {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fw-bold">@alert.StudentName</div>
-                            <div class="small text-muted">@alert.CourseName � @alert.Reason</div>
-                        </div>
-                        <span class="badge bg-danger">@alert.Status</span>
-                    </li>
+                    <tr>
+                        <td><strong>@alert.StudentName</strong></td>
+                        <td>@alert.CourseName</td>
+                        <td><span class="badge bg-danger-subtle text-danger">@alert.Status</span></td>
+                        <td>@alert.Reason</td>
+                        <td>@alert.AssignmentAverage.ToString("0.##")%</td>
+                        <td>@alert.QuizAverage.ToString("0.##")</td>
+                        <td>@alert.SubmissionCount / @alert.AssignmentCount</td>
+                    </tr>
                 }
-                </ul>
-            }
-            else
-            {
-                <div class="empty-state">No at-risk alerts found.</div>
-            }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}
+
+<section class="insight-card">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">Assigned courses</span>
+            <h2>Your courses at a glance</h2>
         </div>
     </div>
-</div>
-
-@section Scripts {
-    <script>
-        (function(){
-            const materials = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Courses.Select(c=> new { name = c.Name, materials = c.MaterialCount })));
-            const labels = materials.map(m=>m.name);
-            const data = materials.map(m=>m.materials);
-            const ctx = document.getElementById('materialsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: { labels: labels, datasets: [{ label: 'Materials', data: data, backgroundColor: 'rgba(79,70,229,0.8)' }] },
-                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
-        })();
-    </script>
-}
+    @if (Model.Courses.Any())
+    {
+        <div class="course-grid">
+        @foreach (var c in Model.Courses)
+        {
+            <article class="course-card">
+                <div class="course-icon">@c.Name.FirstOrDefault()</div>
+                <div>
+                    <h3>@c.Name</h3>
+                    <p>@c.Semester</p>
+                </div>
+                <dl>
+                    <div><dt>Students</dt><dd>@c.StudentCount</dd></div>
+                    <div><dt>Assignments</dt><dd>@c.AssignmentCount</dd></div>
+                    <div><dt>Materials</dt><dd>@c.MaterialCount</dd></div>
+                </dl>
+            </article>
+        }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">No courses are assigned to your profile yet.</div>
+    }
+</section>

@@ -1,18 +1,57 @@
-@model Nexus.Web.ViewModels.Teacher.MaterialUploadViewModel
-@{
-    ViewData["Title"] = "Upload Material";
-}
-<h1>Upload Course Material</h1>
-<form method="post" enctype="multipart/form-data"><div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<div class="mb-3"><label asp-for="CourseId" class="form-label"></label><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select><span asp-validation-for="CourseId" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="MaterialType" class="form-label"></label><select asp-for="MaterialType" asp-items="Html.GetEnumSelectList<Nexus.Data.Models.CourseMaterialType>()" class="form-select"></select></div>
-<div class="mb-3"><label asp-for="Title" class="form-label"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="Category" class="form-label"></label><input asp-for="Category" class="form-control" /><span asp-validation-for="Category" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="File" class="form-label"></label><input asp-for="File" type="file" class="form-control" /><span asp-validation-for="File" class="text-danger"></span></div>
+﻿@model Nexus.Web.ViewModels.Teacher.MaterialUploadViewModel
+@{ ViewData["Title"] = "Upload Material"; }
 
-<button class="btn btn-primary">Upload</button>
-</form>
+<section class="page-hero mb-4">
+    <div>
+        <span class="eyebrow">New resource</span>
+        <h1>Upload Course Material</h1>
+        <p>Add a categorized resource so students can quickly find the right file for their course.</p>
+    </div>
+</section>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <form method="post" enctype="multipart/form-data" class="insight-card form-card">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="CourseId" class="form-label">Course</label>
+                    <select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="MaterialType" class="form-label">Material type</label>
+                    <select asp-for="MaterialType" asp-items="Html.GetEnumSelectList<Nexus.Data.Models.CourseMaterialType>()" class="form-select"></select>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" placeholder="e.g., Week 4 lecture notes" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Category" class="form-label"></label>
+                    <input asp-for="Category" class="form-control" placeholder="General" />
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="File" class="form-label"></label>
+                    <input asp-for="File" type="file" class="form-control file-drop" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button class="btn btn-primary">Upload material</button>
+                <a class="btn btn-outline-secondary" asp-action="Materials">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <aside class="col-lg-4">
+        <div class="tip-card">
+            <span class="tile-icon">💡</span>
+            <h2>Upload tips</h2>
+            <p>Use clear titles and categories like Lectures, Labs, Syllabus, or Exam Prep to make resources easy to scan.</p>
+        </div>
+    </aside>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

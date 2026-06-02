@@ -1,5 +1,34 @@
 @model IEnumerable<Nexus.Data.Models.CourseMaterial>
 @{ ViewData["Title"] = "Materials"; }
-<h1>Course Materials</h1><table class="table"><thead><tr><th>Category</th><th>Type</th><th>Title</th><th>Download</th><th>Uploaded</th></tr></thead><tbody>
-@foreach (var m in Model) { <tr><td>@m.Category</td><td>@m.MaterialType</td><td>@m.Title</td><td><a href="@m.FilePath" download>@m.OriginalFileName</a></td><td>@m.UploadedAtUtc</td></tr> }
-</tbody></table>
+
+<section class="page-hero mb-4">
+    <div>
+        <span class="eyebrow">Learning library</span>
+        <h1>Course Materials</h1>
+        <p>Find the latest notes, guides, and downloadable files shared by your teachers.</p>
+    </div>
+</section>
+
+<section class="insight-card">
+    <div class="table-responsive">
+        <table class="table admin-table align-middle mb-0">
+            <thead><tr><th>Material</th><th>Category</th><th>Type</th><th>Uploaded</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td><strong>@m.Title</strong><br /><small class="text-muted">@m.OriginalFileName</small></td>
+                    <td><span class="badge bg-primary-subtle text-primary">@m.Category</span></td>
+                    <td>@m.MaterialType</td>
+                    <td>@m.UploadedAtUtc.ToLocalTime().ToString("g")</td>
+                    <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="@m.FilePath" download>Download</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state mt-3">No course materials are available for this course yet.</div>
+    }
+</section>
