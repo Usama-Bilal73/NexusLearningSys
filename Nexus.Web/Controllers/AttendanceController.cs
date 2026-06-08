@@ -21,6 +21,34 @@ public class AttendanceController : Controller
         _userManager = userManager;
     }
 
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        if (User.IsInRole(ApplicationRoles.Teacher))
+        {
+            var teacherId = _userManager.GetUserId(User)!;
+            var courses = await _context.Courses.AsNoTracking()
+                .Where(c => c.TeacherId == teacherId)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+            return View(courses);
+        }
+        else if (User.IsInRole(ApplicationRoles.Student))
+        {
+            return RedirectToAction(nameof(MyAttendance));
+        }
+        else if (User.IsInRole(ApplicationRoles.Admin))
+        {
+            var courses = await _context.Courses.AsNoTracking()
+                .Include(c => c.Teacher)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+            return View("AdminIndex", courses);
+        }
+
+        return Forbid();
+    }
+
     // ─── TEACHER: Mark Attendance ────────────────────────────────────────────
 
     [Authorize(Roles = ApplicationRoles.Teacher)]
@@ -86,10 +114,10 @@ public class AttendanceController : Controller
 
     // ─── TEACHER: Attendance Report ──────────────────────────────────────────
 
-    [Authorize(Roles = ApplicationRoles.Teacher)]
+    [Authorize(Roles = $"{ApplicationRoles.Teacher},{ApplicationRoles.Admin}")]
     public async Task<IActionResult> Report(int courseId)
     {
-        if (!await OwnsCourseAsync(courseId)) return Forbid();
+        if (User.IsInRole(ApplicationRoles.Teacher) && !await OwnsCourseAsync(courseId)) return Forbid();
 
         var course = await _context.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.Id == courseId);
         if (course is null) return NotFound();

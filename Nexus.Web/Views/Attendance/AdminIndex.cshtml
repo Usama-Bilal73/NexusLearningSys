@@ -1,0 +1,43 @@
+@model IEnumerable<Nexus.Data.Models.Course>
+@{
+    ViewData["Title"] = "Attendance Management (Admin)";
+}
+
+<section class="page-hero mb-4">
+    <div>
+        <span class="eyebrow">Overview</span>
+        <h1>Attendance Management</h1>
+        <p>Select an active course below to view its attendance reports and statistics.</p>
+    </div>
+</section>
+
+<div class="insight-card">
+    <div class="section-heading mb-4">
+        <div>
+            <h2>All Active Courses</h2>
+        </div>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">No courses available in the system yet.</div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var course in Model)
+            {
+                <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <h4 class="mb-1 text-white">@course.Name</h4>
+                        <small class="text-muted">Instructor: @(course.Teacher?.DisplayName ?? course.Teacher?.Email ?? "Not assigned") | Semester: @course.Semester</small>
+                    </div>
+                    <div>
+                        <a class="btn btn-outline-primary btn-sm" asp-action="Report" asp-route-courseId="@course.Id">
+                            <i class="fa fa-chart-bar me-1"></i>View Attendance Report
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
