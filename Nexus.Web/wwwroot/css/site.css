@@ -30,6 +30,14 @@
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --border-radius-xl: 1.25rem;
   --border-radius-lg: 0.85rem;
+
+  /* Nexus UI Fallback Variables (mapping to brand/neutrals) */
+  --nexus-primary: var(--brand-primary);
+  --nexus-primary-dark: var(--brand-primary-light);
+  --nexus-accent: var(--brand-secondary);
+  --nexus-border: var(--glass-border);
+  --nexus-ink: var(--neutral-dark);
+  --nexus-muted: var(--neutral-muted);
 }
 
 /* Base resets & typography */
@@ -134,10 +142,9 @@ a:hover {
 }
 
 /* Navigation Links */
-.main-nav .nav-link,
-.account-nav .nav-link {
+.app-navbar .navbar-nav .nav-link {
   border-radius: 0.65rem;
-  color: #94a3b8;
+  color: #94a3b8 !important;
   font-weight: 600;
   font-size: 0.92rem;
   margin: 0 0.15rem;
@@ -147,18 +154,42 @@ a:hover {
   transition: var(--transition-smooth);
 }
 
-.main-nav .nav-link:hover,
-.main-nav .nav-link:focus,
-.account-nav .nav-link:hover,
-.account-nav .nav-link:focus {
+.app-navbar .navbar-nav .nav-link:hover,
+.app-navbar .navbar-nav .nav-link:focus {
   background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  color: #fff !important;
 }
 
-.main-nav .nav-link.active {
+.app-navbar .navbar-nav .nav-link.active {
   background: rgba(99, 102, 241, 0.15);
-  color: #a5b4fc;
+  color: #a5b4fc !important;
   font-weight: 700;
+}
+
+.app-navbar .user-pill {
+  color: var(--neutral-body) !important;
+}
+
+.app-navbar .user-pill:hover {
+  color: #fff !important;
+}
+
+.app-navbar .btn-outline-primary {
+  color: #a5b4fc !important;
+  border-color: var(--brand-primary) !important;
+}
+
+.app-navbar .btn-outline-primary:hover {
+  background: var(--brand-primary) !important;
+  color: #fff !important;
+}
+
+.app-navbar .brand-title {
+  color: var(--neutral-dark) !important;
+}
+
+.app-navbar .brand-subtitle {
+  color: var(--neutral-muted) !important;
 }
 
 /* Dropdowns */
@@ -586,14 +617,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .quick-action,
 .course-card {
   backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, .72);
-  box-shadow: 0 20px 55px rgba(15, 23, 42, .08);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
 .dashboard-hero,
 .page-hero {
   align-items: center;
-  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(239,246,255,.86));
+  background: rgba(13, 18, 30, 0.55);
   border-radius: 28px;
   display: flex;
   gap: 1.5rem;
@@ -636,7 +668,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .dashboard-hero p,
 .page-hero p {
-  color: rgba(15, 23, 42, .68);
+  color: var(--neutral-body);
   font-size: 1.05rem;
   margin: 0;
   max-width: 760px;
@@ -663,7 +695,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .quick-action {
-  background: rgba(255, 255, 255, .82);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 22px;
   color: var(--nexus-ink);
   display: flex;
@@ -671,14 +703,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   gap: .2rem;
   padding: 1.2rem;
   text-decoration: none;
-  transition: transform .2s ease, box-shadow .2s ease;
+  transition: var(--transition-smooth);
 }
 
 .quick-action:hover,
 .course-card:hover {
-  box-shadow: 0 28px 70px rgba(79, 70, 229, .16);
-  color: var(--nexus-primary-dark);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(99, 102, 241, 0.3);
   transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+}
+
+.quick-action:hover strong {
+  color: var(--brand-primary-light);
 }
 
 .quick-action span {
@@ -693,7 +730,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .insight-card,
 .tip-card {
-  background: rgba(255, 255, 255, .88);
+  background: var(--glass-bg);
   border-radius: 24px;
   padding: clamp(1rem, 2vw, 1.5rem);
 }
@@ -711,10 +748,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .course-card {
-  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.9));
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 24px;
   padding: 1.25rem;
-  transition: transform .2s ease, box-shadow .2s ease;
+  transition: var(--transition-smooth);
 }
 
 .course-icon {
@@ -758,13 +795,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .form-card .form-label {
-  color: #334155;
+  color: var(--neutral-body);
   font-weight: 750;
 }
 
 .file-drop {
-  background: #f8fafc;
-  border: 1px dashed #94a3b8;
+  background: rgba(15, 23, 42, 0.4) !important;
+  border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+  color: var(--neutral-body);
   padding: 1rem;
 }
 
@@ -774,16 +812,78 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .summary-box {
-  background: #f8fafc;
+  background: rgba(15, 23, 42, 0.4);
   border: 1px solid var(--nexus-border);
   border-radius: 14px;
   padding: .65rem .8rem;
 }
 
 .summary-box summary {
-  color: var(--nexus-primary-dark);
+  color: var(--brand-primary-light);
   cursor: pointer;
   font-weight: 750;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  color: var(--neutral-muted);
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+
+/* Pagination Styling */
+.pagination {
+  margin-top: 1.5rem;
+  gap: 0.35rem;
+}
+
+.page-item .page-link {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  color: var(--neutral-body);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  transition: var(--transition-smooth);
+}
+
+.page-item .page-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.page-item.active .page-link {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.page-item.disabled .page-link {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.04);
+  color: var(--neutral-muted);
+  opacity: 0.5;
+}
+
+/* List Groups */
+.list-group {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-border) !important;
+}
+
+.list-group-item {
+  background-color: rgba(20, 26, 46, 0.4) !important;
+  border-color: var(--glass-border) !important;
+  color: var(--neutral-body) !important;
+  padding: 0.85rem 1.25rem;
+}
+
+.list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  color: #fff !important;
 }
 
 @media (max-width: 767px) {
