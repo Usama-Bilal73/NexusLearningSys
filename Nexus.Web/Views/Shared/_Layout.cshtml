@@ -1,3 +1,8 @@
+@using Nexus.Data.Identity
+@using Nexus.Data.Models
+@using Nexus.Data.Identity
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@inject Nexus.Web.Services.INotificationService NotificationService
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,6 +92,34 @@
                         }
                     </ul>
                     <partial name="_LoginPartial" />
+
+                    @* Notification bell *@
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        var userId = UserManager.GetUserId(User);
+                        var unreadCount = 0;
+                        if (!string.IsNullOrEmpty(userId))
+                        {
+                            unreadCount = await NotificationService.GetUnreadCountAsync(userId!);
+                        }
+
+                        <ul class="navbar-nav ms-3">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link position-relative" href="#" id="notificationsMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-bell"></i>
+                                    @if (unreadCount > 0)
+                                    {
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@unreadCount</span>
+                                    }
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationsMenu" style="min-width:320px;">
+                                    <li class="dropdown-header">Notifications</li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-controller="Notifications" asp-action="Index">View all</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>
@@ -160,9 +193,13 @@
             <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy &amp; data protection</a>
         </div>
     </footer>
+    <!-- Toast container for real-time notifications -->
+    <div id="notificationToasts" class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/signalr-notifications.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

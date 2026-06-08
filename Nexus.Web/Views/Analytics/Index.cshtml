@@ -1,0 +1,98 @@
+@model Nexus.Web.ViewModels.Analytics.DashboardViewModel
+@{
+    ViewData["Title"] = "Analytics Dashboard";
+}
+
+<div class="analytics-hero mb-4">
+    <div>
+        <span class="eyebrow">Analytics</span>
+        <h1>Analytics Dashboard</h1>
+        <p>Overview of platform usage and learning activity.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <div class="h1 mb-0">@Model.TotalStudents</div>
+                <div class="small text-muted">Total Students</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <div class="h1 mb-0">@Model.TotalTeachers</div>
+                <div class="small text-muted">Total Teachers</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <div class="h1 mb-0">@Model.TotalCourses</div>
+                <div class="small text-muted">Total Courses</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <div class="h1 mb-0">@Model.TotalAssignments</div>
+                <div class="small text-muted">Total Assignments</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <div class="h1 mb-0">@Model.ActiveEnrollments</div>
+                <div class="small text-muted">Active Enrollments</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-3">
+    <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Monthly Enrollments</h5>
+                <canvas id="chartMonthlyEnrollments" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Course Popularity</h5>
+                <canvas id="chartCoursePopularity" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Assignment Submission Trends</h5>
+                <canvas id="chartAssignmentTrends" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Student Performance Distribution</h5>
+                <canvas id="chartPerformanceDistribution" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/analytics.js" asp-append-version="true"></script>
+}

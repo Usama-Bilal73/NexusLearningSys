@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nexus.Data.Persistence;
 
@@ -11,9 +12,11 @@ using Nexus.Data.Persistence;
 namespace Nexus.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260602183824_TempFixNotifications")]
+    partial class TempFixNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1130,15 +1133,6 @@ namespace Nexus.Data.Migrations
                     b.Navigation("Courses");
                 });
 #pragma warning restore 612, 618
-        }
-
-        // Back-compat helper: some older migration designer files reference
-        // a static BuildModelStatic method. Provide a thin wrapper so those
-        // designer files remain valid without changing migration history.
-        public static void BuildModelStatic(ModelBuilder modelBuilder)
-        {
-            var snapshot = new ApplicationDbContextModelSnapshot();
-            snapshot.BuildModel(modelBuilder);
         }
     }
 }

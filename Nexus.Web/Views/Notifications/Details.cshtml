@@ -1,0 +1,21 @@
+@model Nexus.Data.Models.Notification
+@{
+    ViewData["Title"] = "Notification";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-link">&larr; Back</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h3>@Model.Title</h3>
+        <div class="text-muted mb-2">@Model.CreatedAtUtc.ToString("f")</div>
+        <p>@Model.Message</p>
+        <form method="post" asp-action="MarkAsRead">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button class="btn btn-primary">Mark as read</button>
+        </form>
+    </div>
+</div>

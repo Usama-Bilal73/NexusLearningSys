@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "New Enrollment";
+}
+
+<form method="post" asp-action="Create">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label class="form-label">Student</label>
+        <select name="studentId" class="form-select">
+            @foreach (var s in ViewBag.Students as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)
+            {
+                <option value="@s.Value">@s.Text</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Course</label>
+        <select name="courseId" class="form-select">
+            @foreach (var c in ViewBag.Courses as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)
+            {
+                <option value="@c.Value">@c.Text</option>
+            }
+        </select>
+    </div>
+    <button class="btn btn-primary">Enroll</button>
+</form>

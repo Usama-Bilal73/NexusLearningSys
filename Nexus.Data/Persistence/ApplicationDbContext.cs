@@ -41,6 +41,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<GradeWeight> GradeWeights => Set<GradeWeight>();
 
+    // Notifications
+    public DbSet<Notification> Notifications => Set<Notification>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -58,6 +61,26 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany()
                 .HasForeignKey(a => a.MarkedByTeacherId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<Notification>(entity =>
+        {
+            entity.ToTable("Notifications", "nexus");
+            entity.HasKey(n => n.Id);
+            entity.Property(n => n.Title).HasMaxLength(200).IsRequired();
+            entity.Property(n => n.RecipientUserId).HasMaxLength(450).IsRequired();
+            entity.Property(n => n.SenderUserId).HasMaxLength(450);
+            entity.Property(n => n.CreatedAtUtc).HasDefaultValueSql("GETUTCDATE()");
+
+            entity.HasOne(n => n.RecipientUser).WithMany()
+                .HasForeignKey(n => n.RecipientUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(n => n.SenderUser).WithMany()
+                .HasForeignKey(n => n.SenderUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(n => new { n.RecipientUserId, n.IsRead });
         });
     }
 }
