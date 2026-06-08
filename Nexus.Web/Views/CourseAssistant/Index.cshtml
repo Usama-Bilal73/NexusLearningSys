@@ -4,7 +4,7 @@
 <p class="text-muted">Ask questions against uploaded syllabus and lecture-note PDFs. The retrieval step indexes stored document text before sending grounded context to OpenAI.</p>
 <form method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="mb-3"><label asp-for="CourseId" class="form-label"></label><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select><span asp-validation-for="CourseId" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="CourseId" class="form-label"></label><select asp-for="CourseId" asp-items="Model.Courses" class="form-select"><option value="" disabled selected>-- Select a Course --</option></select><span asp-validation-for="CourseId" class="text-danger"></span></div>
     <div class="mb-3"><label asp-for="Question" class="form-label"></label><textarea asp-for="Question" rows="4" class="form-control"></textarea><span asp-validation-for="Question" class="text-danger"></span></div>
     <button class="btn btn-primary">Ask Assistant</button>
 </form>

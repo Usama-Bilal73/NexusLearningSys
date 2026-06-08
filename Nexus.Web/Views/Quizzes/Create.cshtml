@@ -7,7 +7,7 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
         <label asp-for="CourseId" class="form-label"></label>
-        <select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select>
+        <select asp-for="CourseId" asp-items="Model.Courses" class="form-select"><option value="" disabled selected>-- Select a Course --</option></select>
     </div>
     <div class="mb-3">
         <label asp-for="Title" class="form-label"></label>
