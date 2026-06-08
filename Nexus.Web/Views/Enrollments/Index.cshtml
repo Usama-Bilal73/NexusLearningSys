@@ -1,0 +1,69 @@
+@model IReadOnlyList<Nexus.Web.ViewModels.Enrollments.EnrollmentViewModel>
+@{
+    ViewData["Title"] = "Enrollments";
+    var selectedCourse = ViewContext.HttpContext.Request.Query["courseId"].ToString();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Enrollments</h1>
+    <div>
+        <a class="btn btn-primary" asp-action="Create">New Enrollment</a>
+        <a class="btn btn-outline-secondary" asp-action="BulkImport">Bulk Import</a>
+    </div>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <input type="text" name="search" value="@ViewContext.HttpContext.Request.Query["search"]" class="form-control" placeholder="Search student or course" />
+    </div>
+    <div class="col-auto">
+        <select name="courseId" class="form-select">
+            <option value="">All courses</option>
+            @foreach (var item in ViewBag.Courses as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)
+            {
+                <option value="@item.Value" selected="@(selectedCourse == item.Value ? "selected" : null)">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-secondary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">No enrollments found.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Student</th>
+                    <th>Enrolled At</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td>@e.CourseName</td>
+                    <td>@e.StudentName</td>
+                    <td>@e.EnrolledAtUtc.ToString("g")</td>
+                    <td class="text-end">
+                        <form method="post" asp-action="Withdraw" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="studentId" value="@e.StudentId" />
+                            <input type="hidden" name="courseId" value="@e.CourseId" />
+                            <button class="btn btn-sm btn-outline-danger">Withdraw</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

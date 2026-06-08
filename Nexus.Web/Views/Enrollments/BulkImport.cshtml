@@ -1,0 +1,22 @@
+@model Nexus.Web.ViewModels.Enrollments.BulkEnrollmentViewModel
+@{
+    ViewData["Title"] = "Bulk Enrollment";
+}
+
+<form method="post" encType="multipart/form-data" asp-action="BulkImport">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label class="form-label">Course</label>
+        <select name="CourseId" class="form-select">
+            @foreach (var item in ViewBag.Courses as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">CSV File (one email per line)</label>
+        <input type="file" name="File" class="form-control" />
+    </div>
+    <button class="btn btn-primary">Import</button>
+</form>

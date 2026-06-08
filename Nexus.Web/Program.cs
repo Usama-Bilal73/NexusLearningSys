@@ -4,6 +4,7 @@ using Nexus.Data.DependencyInjection;
 using Nexus.Data.Identity;
 using Nexus.Data.Persistence;
 using Nexus.Data.Seed;
+using Nexus.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,18 @@ builder.Services.AddScoped<Nexus.Web.Services.ICourseRagService, Nexus.Web.Servi
 builder.Services.AddScoped<Nexus.Web.Services.IPerformanceAnalyticsService, Nexus.Web.Services.PerformanceAnalyticsService>();
 builder.Services.AddScoped<Nexus.Web.Services.IGpaCalculationService, Nexus.Web.Services.GpaCalculationService>();
 builder.Services.AddScoped<Nexus.Web.Services.IReportService, Nexus.Web.Services.ReportService>();
+
+// Analytics service registration
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+// Notification service
+builder.Services.AddScoped<INotificationService, NotificationService>();
+// SignalR and real-time notifications
+builder.Services.AddSignalR();
+builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService>();
+// Recommendation service
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+// Enrollment service
+builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -83,5 +96,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+app.MapHub<Nexus.Web.Hubs.NotificationHub>("/hubs/notifications");
 
 app.Run();

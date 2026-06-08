@@ -1,0 +1,40 @@
+@model IReadOnlyList<Nexus.Web.ViewModels.Recommendations.RecommendationViewModel>
+@{
+    ViewData["Title"] = "Course Recommendations";
+}
+
+<div class="mb-4">
+    <h1>Recommended for you</h1>
+    <p class="text-muted">Courses you might find useful based on your enrollments and performance.</p>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">No recommendations available at this time.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Department</th>
+                    <th>Reason</th>
+                    <th class="text-end">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.CourseName</td>
+                    <td>@r.DepartmentName</td>
+                    <td>@r.Reason</td>
+                    <td class="text-end">@r.Score</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
