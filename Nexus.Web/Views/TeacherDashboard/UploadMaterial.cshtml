@@ -1,4 +1,4 @@
-﻿@model Nexus.Web.ViewModels.Teacher.MaterialUploadViewModel
+@model Nexus.Web.ViewModels.Teacher.MaterialUploadViewModel
 @{ ViewData["Title"] = "Upload Material"; }
 
 <section class="page-hero mb-4">
@@ -16,7 +16,9 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="CourseId" class="form-label">Course</label>
-                    <select asp-for="CourseId" asp-items="Model.Courses" class="form-select"></select>
+                    <select asp-for="CourseId" asp-items="Model.Courses" class="form-select">
+                        <option value="" disabled selected>-- Select a Course --</option>
+                    </select>
                     <span asp-validation-for="CourseId" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
